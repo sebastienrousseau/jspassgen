@@ -12,7 +12,7 @@
  * @module @jspassgen/core
  *
  * @example
- * import { createService } from '@jspassgen/core';
+ * import { createService } from '@sebastienrousseau/jspassgen/core';
  * import { NodeCryptoRandom } from './adapters/node/crypto-random.js';
  *
  * const service = createService({}, {

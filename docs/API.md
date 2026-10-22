@@ -1,6 +1,6 @@
 # API Documentation
 
-This document covers the `@jspassgen/core` package API.
+This document covers the core engine API, imported from `@sebastienrousseau/jspassgen/core`.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ This document covers the `@jspassgen/core` package API.
 Creates a password generation service with full configuration.
 
 ```javascript
-import { createService } from '@jspassgen/core';
+import { createService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createService(config, ports);
 ```
@@ -49,7 +49,7 @@ const service = createService(config, ports);
 Creates a service with minimal configuration. Uses defaults for all optional ports.
 
 ```javascript
-import { createQuickService } from '@jspassgen/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createQuickService(randomGenerator);
 ```
@@ -309,7 +309,7 @@ class DictionaryPort {
 ### Character Sets
 
 ```javascript
-import { BASE64_CHARSET, VOWELS, CONSONANTS } from '@jspassgen/core';
+import { BASE64_CHARSET, VOWELS, CONSONANTS } from '@sebastienrousseau/jspassgen/core';
 ```
 
 | Export | Description |
@@ -328,7 +328,7 @@ import {
   VALID_PASSWORD_TYPES,
   isValidPasswordType,
   validatePasswordTypeConfig
-} from '@jspassgen/core';
+} from '@sebastienrousseau/jspassgen/core';
 ```
 
 | Export | Type | Description |
@@ -350,7 +350,7 @@ import {
   calculateBase64Entropy,
   calculateDictionaryEntropy,
   calculateCharsetEntropy
-} from '@jspassgen/core';
+} from '@sebastienrousseau/jspassgen/core';
 ```
 
 | Function | Description |
@@ -378,7 +378,7 @@ import {
   generateDicewarePassword,
   generateHoneywordPassword,
   generatePronounceablePassword
-} from '@jspassgen/core';
+} from '@sebastienrousseau/jspassgen/core';
 ```
 
 | Function | Description |
@@ -397,7 +397,7 @@ import {
 ## Error Constants
 
 ```javascript
-import { CRYPTO_ERRORS, PASSWORD_ERRORS, PORT_ERRORS } from '@jspassgen/core';
+import { CRYPTO_ERRORS, PASSWORD_ERRORS, PORT_ERRORS } from '@sebastienrousseau/jspassgen/core';
 ```
 
 ### CRYPTO_ERRORS

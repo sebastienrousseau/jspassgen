@@ -112,8 +112,18 @@
   "license_URI": "http://www.opensource.org/licenses/mit-license.php",
   "lockfileVersion": 1,
   "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./index.js"
+    },
+    "./core": "./packages/core/src/index.js",
+    "./adapters/node": "./src/adapters/node/index.js",
+    "./workers": "./src/workers/index.js",
+    "./package.json": "./package.json"
+  },
   "types": "types/index.d.ts",
-  "name": "jspassgen",
+  "name": "@sebastienrousseau/jspassgen",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -163,7 +173,7 @@
     "lint:markdown": "remark \"./*.md\" \"./src/**/*.md\" \"./.github/**/*.md\"",
     "lint:core": "eslint packages/core/src --config packages/core/eslint.config.js",
     "lint:web": "eslint src/ui/web --config src/ui/web/eslint.config.js",
-    "release:prepare": "npm publish $(node -p \"p=require('./package.json');p.name+'-'+p.version+'.tgz'\") --no-git-checks",
+    "release:prepare": "npm publish $(node -p \"p=require('./package.json');p.name.replace(/^@/,'').replace('/','-')+'-'+p.version+'.tgz'\") --no-git-checks",
     "release:publish": "npm publish --access public --ignore-scripts --@OWNER:registry='https://registry.npmjs.org'",
     "release": "npm run build && npm run release:prepare && npm run release:publish",
     "start": "node index.js",
