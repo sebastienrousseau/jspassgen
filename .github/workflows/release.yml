@@ -69,13 +69,31 @@ jobs:
             exit 1
           fi
 
+      # A trusted publisher can only be attached to a package that already
+      # exists, so a new package's first version is published by hand. The
+      # job then has nothing to stage for that version.
+      - name: Skip versions already on npmjs
+        id: registry
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "${name}@${version}" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "::notice::${name}@${version} is already on npmjs; nothing to stage"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install dependencies
+        if: steps.registry.outputs.published == 'false'
         run: npm ci
 
       - name: Build distribution
+        if: steps.registry.outputs.published == 'false'
         run: npm run build
 
       - name: Stage for npmjs with SLSA provenance
+        if: steps.registry.outputs.published == 'false'
         run: |
           cd dist
           npm stage publish --access public --tag latest --provenance --registry=https://registry.npmjs.org
