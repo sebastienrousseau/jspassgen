@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/sebastienrousseau/jspassgen/actions/workflows/quality-gates.yml"><img src="https://img.shields.io/github/actions/workflow/status/sebastienrousseau/jspassgen/quality-gates.yml?branch=master&style=for-the-badge&logo=github&label=Build" alt="Build" /></a>
-  <a href="https://www.npmjs.com/package/jspassgen"><img src="https://img.shields.io/npm/v/jspassgen.svg?style=for-the-badge&color=fc8d62&logo=npm" alt="npm registry" /></a>
+  <a href="https://www.npmjs.com/package/@sebastienrousseau/jspassgen"><img src="https://img.shields.io/npm/v/@sebastienrousseau%2Fjspassgen.svg?style=for-the-badge&color=fc8d62&logo=npm" alt="npm registry" /></a>
   <a href="https://github.com/sebastienrousseau/jspassgen/releases"><img src="https://img.shields.io/github/v/release/sebastienrousseau/jspassgen?style=for-the-badge&color=blue&logo=github&label=Release" alt="Release" /></a>
   <a href="https://app.codacy.com/gh/sebastienrousseau/jspassgen/dashboard"><img src="https://img.shields.io/codacy/grade/0acb169c95e443729551979e0fd86eaf?style=for-the-badge&logo=codacy" alt="Codacy grade" /></a>
   <a href="LICENSE-APACHE"><img src="https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg?style=for-the-badge" alt="License: Apache-2.0 OR MIT" /></a>
@@ -59,19 +59,19 @@
 Run directly via `npx` without prior installation:
 
 ```bash
-npx jspassgen
+npx @sebastienrousseau/jspassgen
 ```
 
 Or install globally:
 
 ```bash
-npm install -g jspassgen
+npm install -g @sebastienrousseau/jspassgen
 ```
 
 ### As a Node.js library
 
 ```bash
-npm install jspassgen
+npm install @sebastienrousseau/jspassgen
 ```
 
 ---
@@ -91,7 +91,7 @@ npm install jspassgen
 Launch the guided terminal prompt:
 
 ```bash
-npx jspassgen --interactive
+npx @sebastienrousseau/jspassgen --interactive
 ```
 
 ### Command Line Generation
@@ -99,13 +99,13 @@ npx jspassgen --interactive
 Generate a strong password and copy it to the clipboard:
 
 ```bash
-npx jspassgen -p quick -c
+npx @sebastienrousseau/jspassgen -p quick -c
 ```
 
 Generate a memorable passphrase using EFF wordlists:
 
 ```bash
-npx jspassgen -t memorable -i 4 -s '-'
+npx @sebastienrousseau/jspassgen -t memorable -i 4 -s '-'
 ```
 
 ---
@@ -167,7 +167,7 @@ jspassgen [options]
 ### High-level Service
 
 ```javascript
-import PasswordGenerator from 'jspassgen';
+import PasswordGenerator from '@sebastienrousseau/jspassgen';
 
 const password = await PasswordGenerator({
   type: 'strong',
@@ -182,8 +182,8 @@ console.log(password);
 ### Pure Core Engine
 
 ```javascript
-import { createService } from '@jspassgen/core';
-import { NodeCryptoRandom } from 'jspassgen/adapters/node';
+import { createService } from '@sebastienrousseau/jspassgen/core';
+import { NodeCryptoRandom } from '@sebastienrousseau/jspassgen/adapters/node';
 
 const service = createService({}, { randomGenerator: new NodeCryptoRandom() });
 

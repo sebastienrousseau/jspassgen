@@ -34,7 +34,7 @@ Explore the technical architecture, API specifications, and performance standard
 
 | Reference | Description |
 |-----------|-------------|
-| [API Reference](./API.md) | Complete `@jspassgen/core` package API |
+| [API Reference](./API.md) | Complete core engine API (`@sebastienrousseau/jspassgen/core`) |
 | [Architecture](./ARCHITECTURE.md) | Hexagonal architecture with ports and adapters |
 | [Changelog](../CHANGELOG.md) | Version history and release notes |
 | [Performance Budget](./PERFORMANCE_BUDGET.md) | Web UI performance targets and budgets |
@@ -59,7 +59,7 @@ Connect with contributors and report issues.
 
 ```bash
 # Interactive mode
-npx jspassgen
+npx @sebastienrousseau/jspassgen
 
 # Direct command
 jspassgen -t strong -l 16 -i 3 -s '-'
@@ -68,8 +68,8 @@ jspassgen -t strong -l 16 -i 3 -s '-'
 ### Import in Code
 
 ```javascript
-import { createQuickService } from 'jspassgen/core';
-import { NodeCryptoRandom } from 'jspassgen/adapters/node/crypto-random.js';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
+import { NodeCryptoRandom } from '@sebastienrousseau/jspassgen/adapters/node';
 
 const service = createQuickService(new NodeCryptoRandom());
 const password = await service.generate({
@@ -83,8 +83,8 @@ const password = await service.generate({
 ### Use the Core Package
 
 ```javascript
-import { createQuickService } from '@jspassgen/core';
-import { NodeCryptoRandom } from 'jspassgen/adapters/node/crypto-random.js';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
+import { NodeCryptoRandom } from '@sebastienrousseau/jspassgen/adapters/node';
 
 const service = createQuickService(new NodeCryptoRandom());
 const password = await service.generate({

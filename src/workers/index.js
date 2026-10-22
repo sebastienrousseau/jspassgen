@@ -11,7 +11,7 @@
  * @module workers
  *
  * @example
- * import { PasswordWorkerPool } from 'jspassgen/workers';
+ * import { PasswordWorkerPool } from '@sebastienrousseau/jspassgen/workers';
  *
  * const pool = new PasswordWorkerPool({ size: 4 });
  * await pool.initialize();

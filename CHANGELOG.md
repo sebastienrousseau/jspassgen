@@ -7,6 +7,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.20] - 2026-10-22
+
+### Changed
+
+- **Package Name**: Published as `@sebastienrousseau/jspassgen`, in line with the author's other npm packages. The unscoped `jspassgen` package stops at 0.0.19 and is deprecated in favour of the new name. The `jspassgen` and `password-generator` commands are unchanged: `npm install -g @sebastienrousseau/jspassgen` or `npx @sebastienrousseau/jspassgen`.
+- **Package Exports**: Added an `exports` map. The root, `core`, `adapters/node` and `workers` subpaths are the public entry points, and the import examples in the README and docs now resolve (`jspassgen/core` and `@jspassgen/core` never did). Deep imports of other files are no longer possible.
+- **Release Workflow**: From 0.0.21, npmjs releases are staged through trusted publishing with provenance and made public by a maintainer with `npm stage approve`. npm attaches a trusted publisher only to a package that exists, so 0.0.20, the first version under the new name, is published by hand without provenance, and the workflow skips a version that is already on npmjs. The workflow uses the npm bundled with Node 24 instead of installing `npm@latest`.
+- **Dependencies**: esmock 2.8.0, jsdom 30.1.3, prettier 3.9.10, react 19.3.1, @babel/preset-typescript 8.0.7 and eslint-plugin-prettier 5.5.7.
+
+### Removed
+
+- **Publishing Scripts**: Removed `scripts/publish-all-versions.sh`, which backfilled versions to the unscoped `jspassgen` name.
+
+### Security
+
+- **markdown-it**: Constrained to `^14.3.3` through `overrides` so the version behind Dependabot alert #103 cannot resolve.
+
+### Fixed
+
+- **CLI Compatibility**: Added explicit step to upgrade npm CLI to the latest version in the release workflow to guarantee native OIDC Trusted Publishing compatibility.
+
+### Changed
+
+- **Publishing Scripts**: Added version iterations through `0.0.20` across automated multi-version publishing scripts.
+
 ## [0.0.19] - 2026-10-10
 
 ### Fixed
