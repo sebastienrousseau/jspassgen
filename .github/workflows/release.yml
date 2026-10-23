@@ -1,8 +1,10 @@
 name: Release
 
+# `published`, not `created`: gh release create with assets makes a draft,
+# uploads, then publishes, and a draft's `created` event starts no workflow.
 on:
   release:
-    types: [created]
+    types: [published]
 
 permissions:
   contents: read
