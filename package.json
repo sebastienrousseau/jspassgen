@@ -198,7 +198,7 @@
     "benchmark:generation": "node benchmarks/password-generation.bench.js"
   },
   "type": "module",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "overrides": {
     "lodash": "^4.18.1",
     "jshint": {
