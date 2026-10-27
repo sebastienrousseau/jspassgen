@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.21] - Unreleased
 
+### Security
+
+- `package-lock.json` moves serialize-javascript 7.1.2 to 7.1.4 (Dependabot alert: low).
+
 ### Fixed
 
 - **Release Workflow**: The workflow now starts when a release is published rather than created. 0.0.20's release was created as a draft while its tarball uploaded, and a draft's `created` event starts no workflow, so 0.0.20 was not published to GitHub Packages.
