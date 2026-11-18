@@ -25,7 +25,7 @@ in [`src/config.js`](../src/config.js) and registered with commander in
 | `-l, --length <number>` | Characters per chunk | `16` |
 | `-i, --iteration <number>` | Chunks, words or syllables; total passwords for `honeyword` | `1` |
 | `-s, --separator <char>` | Text between chunks or words | `-` |
-| `-c, --clipboard` | Copy the password (the real one for `honeyword`, the first one with `-n`) to the clipboard | Off |
+| `-c, --clipboard` | Copy the password (the real one for `honeyword`, the first one with `-n`) to the clipboard; it is cleared after 45 seconds unless the clipboard changed | Off |
 | `-a, --audit` | Print a security audit: entropy sources, algorithms and storage guidance | Off |
 | `--learn` | Print the equivalent command and common shortcuts | Off |
 | `-f, --format <format>` | Output format for bulk runs: `text`, `json`, `yaml`, `csv` | `text` |
@@ -58,8 +58,5 @@ starting commands instead of generating.
   `benchmarks/benchmark-results.json` run.
 - The web UI is no longer described as WCAG 2.2 AAA: its own
   [accessibility audit](ACCESSIBILITY_AUDIT.md) records AAA as failing.
-- The clipboard is no longer described as cleared after 45 seconds or on
-  exit: the CLI schedules the clear on an unreferenced timer and exits
-  before it fires.
 - `npm run demo:web` does not exist; the web UI is served with
   `npm run web` or built and served with `npm run web:preview`.

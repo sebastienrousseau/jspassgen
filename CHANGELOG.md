@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.22] - Unreleased
 
+### Security
+
+- **Clipboard Clear** (GHSA-w3f5-33xf-fq99): `--clipboard` promised to wipe the copied password after 45 seconds, but scheduled the wipe on an unreferenced timer in a process that exits at once, so the password stayed on the clipboard. A detached process now does the wipe: it receives only a SHA-256 digest of the password over stdin and clears the clipboard after 45 seconds if it still holds that password.
+- **Web Password History** (GHSA-mhc2-hmv6-4fc9): The web demo saved the last five generated passwords to `localStorage` in plain text, where they outlived the browser session. The history is now kept in memory only, and the demo deletes the `jspassgen_history` key earlier versions left behind.
+
 ### Fixed
 
 - **npm Release Job**: The release workflow publishes to npmjs with `npm publish --provenance` inside an `npm` environment that a maintainer approves, the setup crypto-service releases with, instead of `npm stage publish`, which failed with E401 for 0.0.21 although a stage-only trusted publisher was configured. A manual run (`workflow_dispatch` with a `tag`) publishes an existing release tag to npmjs only.
