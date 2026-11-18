@@ -1,0 +1,154 @@
+{
+  "group": "custom",
+  "vectors": [
+    {
+      "id": "custom-hex-10x2",
+      "input": {
+        "type": "custom",
+        "allowedChars": "0123456789abcdef",
+        "length": 10,
+        "iteration": 2,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          16,
+          5
+        ],
+        [
+          16,
+          5
+        ],
+        [
+          16,
+          11
+        ],
+        [
+          16,
+          5
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          16,
+          6
+        ],
+        [
+          16,
+          7
+        ],
+        [
+          16,
+          4
+        ],
+        [
+          16,
+          1
+        ],
+        [
+          16,
+          10
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          16,
+          6
+        ],
+        [
+          16,
+          2
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          7
+        ],
+        [
+          16,
+          0
+        ],
+        [
+          16,
+          7
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          11
+        ],
+        [
+          16,
+          14
+        ]
+      ],
+      "expected": {
+        "password": "55b5e6741a-f620707cbe",
+        "entropy": 80,
+        "securityLevel": "GOOD"
+      }
+    },
+    {
+      "id": "custom-forbidden-8x1",
+      "input": {
+        "type": "custom",
+        "allowedChars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "forbiddenChars": "AEIOU",
+        "length": 8,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          21,
+          7
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          21,
+          3
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          21,
+          15
+        ],
+        [
+          21,
+          4
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          21,
+          5
+        ]
+      ],
+      "expected": {
+        "password": "KHFPTGHH",
+        "entropy": 35.14,
+        "securityLevel": "WEAK"
+      }
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "group": "diceware",
+  "vectors": [
+    {
+      "id": "diceware-6-dash",
+      "input": {
+        "type": "diceware",
+        "iteration": 6,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          7776,
+          2552
+        ],
+        [
+          7776,
+          3407
+        ],
+        [
+          7776,
+          6609
+        ],
+        [
+          7776,
+          2804
+        ],
+        [
+          7776,
+          7496
+        ],
+        [
+          7776,
+          4761
+        ]
+      ],
+      "expected": {
+        "password": "fiction-impulse-swimming-garment-versus-pouch",
+        "entropy": 77.55,
+        "securityLevel": "MODERATE"
+      }
+    },
+    {
+      "id": "diceware-8-space",
+      "input": {
+        "type": "diceware",
+        "iteration": 8,
+        "separator": " "
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          7776,
+          7133
+        ],
+        [
+          7776,
+          4506
+        ],
+        [
+          7776,
+          3212
+        ],
+        [
+          7776,
+          6205
+        ],
+        [
+          7776,
+          6139
+        ],
+        [
+          7776,
+          5989
+        ],
+        [
+          7776,
+          4735
+        ],
+        [
+          7776,
+          2571
+        ]
+      ],
+      "expected": {
+        "password": "unhealthy partner headphone sponge snugly skimmer pork filth",
+        "entropy": 103.4,
+        "securityLevel": "GOOD"
+      }
+    }
+  ]
+}

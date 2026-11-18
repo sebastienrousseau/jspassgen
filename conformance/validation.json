@@ -1,0 +1,123 @@
+{
+  "cases": [
+    {
+      "id": "valid-strong",
+      "input": {
+        "type": "strong",
+        "length": 16,
+        "iteration": 4
+      },
+      "expected": {
+        "isValid": true,
+        "errors": []
+      }
+    },
+    {
+      "id": "valid-diceware",
+      "input": {
+        "type": "diceware",
+        "iteration": 6
+      },
+      "expected": {
+        "isValid": true,
+        "errors": []
+      }
+    },
+    {
+      "id": "missing-type",
+      "input": {
+        "length": 16,
+        "iteration": 1
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Password type is required"
+        ]
+      }
+    },
+    {
+      "id": "unknown-type",
+      "input": {
+        "type": "rot13",
+        "length": 16
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Unknown password type: \"rot13\". Valid types: strong, base64, memorable, quantum-resistant, diceware, honeyword, pronounceable, custom"
+        ]
+      }
+    },
+    {
+      "id": "iteration-negative",
+      "input": {
+        "type": "strong",
+        "length": 16,
+        "iteration": -1
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Iteration must be a positive integer"
+        ]
+      }
+    },
+    {
+      "id": "iteration-fraction",
+      "input": {
+        "type": "strong",
+        "length": 16,
+        "iteration": 1.5
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Iteration must be a positive integer"
+        ]
+      }
+    },
+    {
+      "id": "length-over-max",
+      "input": {
+        "type": "strong",
+        "length": 1025,
+        "iteration": 1
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Length must not exceed 1024"
+        ]
+      }
+    },
+    {
+      "id": "quantum-under-min",
+      "input": {
+        "type": "quantum-resistant",
+        "length": 31,
+        "iteration": 1
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "Length must be at least 32"
+        ]
+      }
+    },
+    {
+      "id": "custom-chars-not-string",
+      "input": {
+        "type": "custom",
+        "allowedChars": 42,
+        "length": 8
+      },
+      "expected": {
+        "isValid": false,
+        "errors": [
+          "allowedChars must be a string for custom password generation"
+        ]
+      }
+    }
+  ]
+}

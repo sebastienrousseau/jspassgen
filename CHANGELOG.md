@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Conformance Kit**: `conformance/` holds the contract every port must meet: draw-tape vectors for each password type, error, validation and entropy cases, and the EFF word list, with `SHA256SUMS`. It is generated from `packages/core` (`npm run conformance:generate`); `test/conformance.test.js` replays it through the core and fails if it drifts (`npm run conformance:check` does the same without mocha).
 - **Ecosystem Design**: [ADR 0001](docs/adr/0001-ecosystem-lockstep.md) and `docs/ecosystem.json` define the jspassgen suite: this package, a CLI, MCP and LSP servers, native Python, Rust, Java, .NET and C++ ports proven by a shared conformance kit, and the site, all released at one version. The new members are planned; 0.0.21 ships as jspassgen alone.
 
 ### Changed

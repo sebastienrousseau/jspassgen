@@ -1,0 +1,114 @@
+{
+  "cases": [
+    {
+      "id": "strong-16x4",
+      "input": {
+        "type": "strong",
+        "length": 16,
+        "iteration": 4
+      },
+      "expected": {
+        "totalBits": 384,
+        "securityLevel": "EXCELLENT",
+        "recommendation": "Excellent security. Suitable for high-security applications.",
+        "perUnit": 6
+      }
+    },
+    {
+      "id": "base64-12x3",
+      "input": {
+        "type": "base64",
+        "length": 12,
+        "iteration": 3
+      },
+      "expected": {
+        "totalBits": 216,
+        "securityLevel": "STRONG",
+        "recommendation": "Excellent security. Suitable for high-security applications.",
+        "perUnit": 6
+      }
+    },
+    {
+      "id": "memorable-4",
+      "input": {
+        "type": "memorable",
+        "iteration": 4
+      },
+      "expected": {
+        "totalBits": 51.7,
+        "securityLevel": "WEAK",
+        "recommendation": "Consider increasing password length or iteration count for better security.",
+        "perUnit": 12.925
+      }
+    },
+    {
+      "id": "quantum-32x1",
+      "input": {
+        "type": "quantum-resistant",
+        "length": 32,
+        "iteration": 1
+      },
+      "expected": {
+        "totalBits": 192,
+        "securityLevel": "STRONG",
+        "recommendation": "Excellent security. Suitable for high-security applications.",
+        "perUnit": 6
+      }
+    },
+    {
+      "id": "diceware-6",
+      "input": {
+        "type": "diceware",
+        "iteration": 6
+      },
+      "expected": {
+        "totalBits": 77.55,
+        "securityLevel": "MODERATE",
+        "recommendation": "Consider increasing password length or iteration count for better security.",
+        "perUnit": 12.924999999999999
+      }
+    },
+    {
+      "id": "honeyword-12x5",
+      "input": {
+        "type": "honeyword",
+        "length": 12,
+        "iteration": 5
+      },
+      "expected": {
+        "totalBits": 360,
+        "securityLevel": "EXCELLENT",
+        "recommendation": "Consider increasing password length or iteration count for better security.",
+        "perUnit": 6
+      }
+    },
+    {
+      "id": "pronounceable-4",
+      "input": {
+        "type": "pronounceable",
+        "iteration": 4
+      },
+      "expected": {
+        "totalBits": 53.71,
+        "securityLevel": "WEAK",
+        "recommendation": "Consider increasing password length or iteration count for better security.",
+        "perUnit": 13.4275
+      }
+    },
+    {
+      "id": "custom-hex-10x2",
+      "input": {
+        "type": "custom",
+        "allowedChars": "0123456789abcdef",
+        "length": 10,
+        "iteration": 2
+      },
+      "expected": {
+        "totalBits": 80,
+        "securityLevel": "GOOD",
+        "recommendation": "Consider increasing password length or iteration count for better security.",
+        "perUnit": 4
+      }
+    }
+  ]
+}
