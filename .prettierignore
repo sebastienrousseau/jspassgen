@@ -1,0 +1,11 @@
+# Generated output: fix the generator, never reformat the result.
+dist/
+coverage/
+conformance/
+docs/
+benchmarks/benchmark-results.json
+# Word lists are data; the conformance kit copies them byte for byte.
+src/dictionaries/
+# Markdown is linted by remark (npm run lint:markdown).
+*.md
+package-lock.json

@@ -4,7 +4,15 @@
 /**
  * Valid password types supported by the generator.
  */
-export type PasswordType = 'strong' | 'base64' | 'memorable' | 'quantum-resistant' | 'diceware' | 'honeyword' | 'pronounceable' | 'custom';
+export type PasswordType =
+  | "strong"
+  | "base64"
+  | "memorable"
+  | "quantum-resistant"
+  | "diceware"
+  | "honeyword"
+  | "pronounceable"
+  | "custom";
 
 /**
  * Valid password types array.

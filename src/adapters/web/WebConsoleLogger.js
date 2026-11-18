@@ -83,7 +83,11 @@ export class WebConsoleLogger {
     }
 
     if (this.config.colors && typeof console !== "undefined" && console.debug) {
-      console.debug(`%c${this._formatMessage("DEBUG", message)}`, "color: gray", ...args);
+      console.debug(
+        `%c${this._formatMessage("DEBUG", message)}`,
+        "color: gray",
+        ...args,
+      );
     } else {
       this.log(this._formatMessage("DEBUG", message), ...args);
     }
@@ -100,7 +104,11 @@ export class WebConsoleLogger {
     }
 
     if (this.config.colors && typeof console !== "undefined" && console.info) {
-      console.info(`%c${this._formatMessage("INFO", message)}`, "color: blue", ...args);
+      console.info(
+        `%c${this._formatMessage("INFO", message)}`,
+        "color: blue",
+        ...args,
+      );
     } else {
       this.log(this._formatMessage("INFO", message), ...args);
     }
@@ -118,7 +126,11 @@ export class WebConsoleLogger {
 
     if (typeof console !== "undefined" && console.warn) {
       if (this.config.colors) {
-        console.warn(`%c${this._formatMessage("WARN", message)}`, "color: orange", ...args);
+        console.warn(
+          `%c${this._formatMessage("WARN", message)}`,
+          "color: orange",
+          ...args,
+        );
       } else {
         console.warn(this._formatMessage("WARN", message), ...args);
       }
@@ -142,7 +154,7 @@ export class WebConsoleLogger {
         console.error(
           `%c${this._formatMessage("ERROR", message)}`,
           "color: red; font-weight: bold",
-          ...args
+          ...args,
         );
       } else {
         console.error(this._formatMessage("ERROR", message), ...args);

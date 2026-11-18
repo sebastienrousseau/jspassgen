@@ -14,15 +14,15 @@
  * NO business rules or validation logic beyond basic type coercion.
  */
 
-import { createService } from '../../../../packages/core/src/index.js';
-import { BrowserCryptoRandom } from '../adapters/BrowserCryptoRandom.js';
-import { BrowserStorage } from '../adapters/BrowserStorage.js';
-import { BrowserClock } from '../adapters/BrowserClock.js';
-import { createEffDicewareDictionary } from '../../../adapters/web/eff-diceware-dictionary.js';
-import { StateToCoreMapper } from '../state/StateToCoreMapper.js';
-import { PasswordViewModel } from '../view-models/PasswordViewModel.js';
-import { ValidationViewModel } from '../view-models/ValidationViewModel.js';
-import { EntropyViewModel } from '../view-models/EntropyViewModel.js';
+import { createService } from "../../../../packages/core/src/index.js";
+import { BrowserCryptoRandom } from "../adapters/BrowserCryptoRandom.js";
+import { BrowserStorage } from "../adapters/BrowserStorage.js";
+import { BrowserClock } from "../adapters/BrowserClock.js";
+import { createEffDicewareDictionary } from "../../../adapters/web/eff-diceware-dictionary.js";
+import { StateToCoreMapper } from "../state/StateToCoreMapper.js";
+import { PasswordViewModel } from "../view-models/PasswordViewModel.js";
+import { ValidationViewModel } from "../view-models/ValidationViewModel.js";
+import { EntropyViewModel } from "../view-models/EntropyViewModel.js";
 
 /**
  * Web UI controller implementing the thin adapter pattern.
@@ -46,7 +46,7 @@ export class WebUIController {
         storage: options.storage ?? new BrowserStorage(),
         clock: options.clock ?? new BrowserClock(),
         dictionary: options.dictionary ?? createEffDicewareDictionary(),
-      }
+      },
     );
 
     this.stateToCoreMapper = new StateToCoreMapper();
@@ -80,14 +80,17 @@ export class WebUIController {
     // Step 1: Validate first (fail fast)
     const validation = this.validate(formState);
     if (!validation.isValid) {
-      throw new Error(validation.errors.join('; '));
+      throw new Error(validation.errors.join("; "));
     }
 
     // Step 2: Map UI state to core config
     const config = this.stateToCoreMapper.toConfig(formState);
 
     // Step 3: Delegate generation to core service (with entropy info for Web UI)
-    const result = await this.service.generate({ ...config, includeEntropy: true });
+    const result = await this.service.generate({
+      ...config,
+      includeEntropy: true,
+    });
 
     // Step 4: Extract password and entropy info from result
     // Core service returns an object with { password, entropy, securityLevel, metadata }
@@ -95,7 +98,7 @@ export class WebUIController {
     const entropyInfo = {
       totalBits: result.entropy,
       securityLevel: result.securityLevel,
-      recommendation: result.metadata?.recommendation || '',
+      recommendation: result.metadata?.recommendation || "",
     };
 
     // Step 5: Transform to view model

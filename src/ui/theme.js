@@ -454,9 +454,9 @@ export const renderMenu = (title, options, selectedIndex) => {
   for (let i = 0; i < options.length; i++) {
     const isSelected = i === selectedIndex;
     const pointer = isSelected ? colors.primary(icons.pointer) : " ";
-    const option = isSelected ?
-      colors.text(options[i]) :
-      colors.muted(options[i]);
+    const option = isSelected
+      ? colors.text(options[i])
+      : colors.muted(options[i]);
     lines.push(`  ${pointer} ${option}`);
   }
 

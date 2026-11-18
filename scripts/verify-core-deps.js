@@ -235,7 +235,7 @@ function verifyCore() {
       if (match) {
         const lineNum = findLineNumber(content, match);
         violations.push(
-          new Violation(file, "Node.js built-in", module, lineNum, match)
+          new Violation(file, "Node.js built-in", module, lineNum, match),
         );
       }
     }
@@ -245,7 +245,9 @@ function verifyCore() {
       const match = checkModuleImport(content, lib);
       if (match) {
         const lineNum = findLineNumber(content, match);
-        violations.push(new Violation(file, "CLI library", lib, lineNum, match));
+        violations.push(
+          new Violation(file, "CLI library", lib, lineNum, match),
+        );
       }
     }
 
@@ -255,7 +257,7 @@ function verifyCore() {
       if (match) {
         const lineNum = findLineNumber(content, match);
         violations.push(
-          new Violation(file, "UI framework", framework, lineNum, match)
+          new Violation(file, "UI framework", framework, lineNum, match),
         );
       }
     }
@@ -266,7 +268,7 @@ function verifyCore() {
       if (match) {
         const lineNum = findLineNumber(content, match);
         violations.push(
-          new Violation(file, "Platform-specific", pkg, lineNum, match)
+          new Violation(file, "Platform-specific", pkg, lineNum, match),
         );
       }
     }
@@ -281,8 +283,8 @@ function verifyCore() {
             "Browser global",
             global,
             result.line,
-            result.match
-          )
+            result.match,
+          ),
         );
       }
     }
@@ -292,11 +294,15 @@ function verifyCore() {
   console.log("==========================================");
 
   if (violations.length === 0) {
-    console.log("\x1b[32mSUCCESS: No platform dependencies found in packages/core\x1b[0m");
+    console.log(
+      "\x1b[32mSUCCESS: No platform dependencies found in packages/core\x1b[0m",
+    );
     return 0;
   }
 
-  console.log(`\x1b[31mFAILED: Found ${violations.length} violation(s)\x1b[0m\n`);
+  console.log(
+    `\x1b[31mFAILED: Found ${violations.length} violation(s)\x1b[0m\n`,
+  );
 
   // Group violations by category
   const byCategory = {};
@@ -317,7 +323,9 @@ function verifyCore() {
 
   console.log("\n==========================================");
   console.log("\x1b[33mThe core package must remain platform-agnostic.\x1b[0m");
-  console.log("\x1b[33mMove platform-specific code to src/adapters/ instead.\x1b[0m");
+  console.log(
+    "\x1b[33mMove platform-specific code to src/adapters/ instead.\x1b[0m",
+  );
 
   return 1;
 }

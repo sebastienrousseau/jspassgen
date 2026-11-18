@@ -8,7 +8,7 @@
  * @module generators/diceware
  */
 
-import { validatePositiveInteger } from '../domain/base64-generation.js';
+import { validatePositiveInteger } from "../domain/base64-generation.js";
 
 /**
  * Generates a diceware passphrase using the EFF large wordlist (7776 words).
@@ -20,21 +20,27 @@ import { validatePositiveInteger } from '../domain/base64-generation.js';
  * @param {Object} dictionary - DictionaryPort implementation with EFF diceware list.
  * @returns {Promise<string>} The generated diceware passphrase.
  */
-export const generateDicewarePassword = async (config, randomGenerator, dictionary) => {
+export const generateDicewarePassword = async (
+  config,
+  randomGenerator,
+  dictionary,
+) => {
   const { iteration, separator } = config;
 
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(iteration, "iteration");
 
   // Ensure dictionary is loaded
   const words = await dictionary.loadDictionary();
   if (!words || words.length === 0) {
-    throw new Error('Diceware dictionary is empty or not loaded');
+    throw new Error("Diceware dictionary is empty or not loaded");
   }
 
   // Verify we have the correct EFF diceware word count
   const wordCount = await dictionary.getWordCount();
   if (wordCount !== 7776) {
-    throw new Error(`Invalid diceware dictionary size: ${wordCount}. Expected 7776 words.`);
+    throw new Error(
+      `Invalid diceware dictionary size: ${wordCount}. Expected 7776 words.`,
+    );
   }
 
   const selectedWords = [];
@@ -76,15 +82,15 @@ export const validateDicewareConfig = (config) => {
   const { iteration, separator } = config;
 
   if (!Number.isInteger(iteration) || iteration < 1) {
-    errors.push('Iteration must be a positive integer');
+    errors.push("Iteration must be a positive integer");
   }
 
   if (iteration > 20) {
-    errors.push('Iteration should not exceed 20 words for practical use');
+    errors.push("Iteration should not exceed 20 words for practical use");
   }
 
-  if (typeof separator !== 'string') {
-    errors.push('Separator must be a string');
+  if (typeof separator !== "string") {
+    errors.push("Separator must be a string");
   }
 
   return {

@@ -48,4 +48,6 @@ export declare class OnboardingFlow {
 /**
  * Start the interactive onboarding flow
  */
-export declare function startOnboarding(onComplete: (config: OnboardingConfig) => void): void;
+export declare function startOnboarding(
+  onComplete: (config: OnboardingConfig) => void,
+): void;

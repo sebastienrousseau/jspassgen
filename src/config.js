@@ -157,12 +157,14 @@ export const CLI_OPTIONS = {
     },
     audit: {
       flags: "-a, --audit",
-      description: "show security audit with entropy sources and algorithms used",
+      description:
+        "show security audit with entropy sources and algorithms used",
       defaultValue: false,
     },
     learn: {
       flags: "--learn",
-      description: "show equivalent CLI command to help graduate from guided mode",
+      description:
+        "show equivalent CLI command to help graduate from guided mode",
       defaultValue: false,
     },
     format: {
@@ -183,7 +185,8 @@ export const CLI_OPTIONS = {
     },
     allowedChars: {
       flags: "--allowed-chars <chars>",
-      description: "character set specification for custom passwords (e.g., 'UPPERCASE,DIGITS,!@#')",
+      description:
+        "character set specification for custom passwords (e.g., 'UPPERCASE,DIGITS,!@#')",
     },
     forbiddenChars: {
       flags: "--forbidden-chars <chars>",

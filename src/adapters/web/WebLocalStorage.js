@@ -180,7 +180,11 @@ export class WebLocalStorage {
         }
 
         const storageData = this._deserialize(item);
-        if (storageData && typeof storageData === "object" && "value" in storageData) {
+        if (
+          storageData &&
+          typeof storageData === "object" &&
+          "value" in storageData
+        ) {
           return storageData.value;
         }
 

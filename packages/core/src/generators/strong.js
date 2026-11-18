@@ -8,8 +8,8 @@
  * @module generators/strong
  */
 
-import { BASE64_CHARSET } from '../domain/charset.js';
-import { validatePositiveInteger } from '../domain/base64-generation.js';
+import { BASE64_CHARSET } from "../domain/charset.js";
+import { validatePositiveInteger } from "../domain/base64-generation.js";
 
 /**
  * Generates a single chunk of a strong password using uniform character selection.
@@ -19,15 +19,17 @@ import { validatePositiveInteger } from '../domain/base64-generation.js';
  * @returns {Promise<string>} A random string of the specified length.
  */
 export const generateChunk = async (length, randomGenerator) => {
-  validatePositiveInteger(length, 'length');
+  validatePositiveInteger(length, "length");
 
-  if (typeof randomGenerator.generateRandomString === 'function') {
+  if (typeof randomGenerator.generateRandomString === "function") {
     return randomGenerator.generateRandomString(length, BASE64_CHARSET);
   }
 
-  let result = '';
+  let result = "";
   for (let i = 0; i < length; i++) {
-    const index = await randomGenerator.generateRandomInt(BASE64_CHARSET.length);
+    const index = await randomGenerator.generateRandomInt(
+      BASE64_CHARSET.length,
+    );
     result += BASE64_CHARSET[index];
   }
   return result;
@@ -46,8 +48,8 @@ export const generateChunk = async (length, randomGenerator) => {
 export const generateStrongPassword = async (config, randomGenerator) => {
   const { length, iteration, separator } = config;
 
-  validatePositiveInteger(length, 'length');
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(length, "length");
+  validatePositiveInteger(iteration, "iteration");
 
   const chunks = [];
   for (let i = 0; i < iteration; i++) {

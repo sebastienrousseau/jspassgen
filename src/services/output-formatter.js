@@ -27,9 +27,9 @@ function escapeCSVValue(value) {
     str.includes(",") ||
     str.includes("\n") ||
     str.includes("\r") ||
-    str.includes("\"")
+    str.includes('"')
   ) {
-    return `"${str.replace(/"/g, "\"\"")}"`;
+    return `"${str.replace(/"/g, '""')}"`;
   }
 
   return str;
@@ -124,9 +124,9 @@ export function formatAsCSV(passwordData, options = {}) {
   const { includeHeaders = true } = options;
 
   if (!passwordData.length) {
-    return includeHeaders ?
-      "password,type,length,iteration,separator,strength,entropy\n" :
-      "";
+    return includeHeaders
+      ? "password,type,length,iteration,separator,strength,entropy\n"
+      : "";
   }
 
   // Define CSV headers

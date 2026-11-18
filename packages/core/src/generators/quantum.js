@@ -9,8 +9,8 @@
  * @module generators/quantum
  */
 
-import { BASE64_CHARSET } from '../domain/charset.js';
-import { validatePositiveInteger } from '../domain/base64-generation.js';
+import { BASE64_CHARSET } from "../domain/charset.js";
+import { validatePositiveInteger } from "../domain/base64-generation.js";
 
 /**
  * Minimum entropy target for quantum-resistant passwords (256 bits).
@@ -26,7 +26,9 @@ const ENTROPY_PER_CHAR = Math.log2(BASE64_CHARSET.length);
 /**
  * Minimum character length to achieve quantum-resistant entropy.
  */
-export const QUANTUM_MIN_LENGTH = Math.ceil(QUANTUM_ENTROPY_TARGET_BITS / ENTROPY_PER_CHAR);
+export const QUANTUM_MIN_LENGTH = Math.ceil(
+  QUANTUM_ENTROPY_TARGET_BITS / ENTROPY_PER_CHAR,
+);
 
 /**
  * Generates a single chunk of a quantum-resistant password using uniform character selection.
@@ -37,21 +39,23 @@ export const QUANTUM_MIN_LENGTH = Math.ceil(QUANTUM_ENTROPY_TARGET_BITS / ENTROP
  * @returns {Promise<string>} A random string of the specified length.
  */
 export const generateQuantumChunk = async (length, randomGenerator) => {
-  validatePositiveInteger(length, 'length');
+  validatePositiveInteger(length, "length");
 
   if (length < QUANTUM_MIN_LENGTH) {
     console.warn(
-      `Warning: Quantum password length (${length}) is below recommended minimum (${QUANTUM_MIN_LENGTH} chars) for 256-bit entropy.`
+      `Warning: Quantum password length (${length}) is below recommended minimum (${QUANTUM_MIN_LENGTH} chars) for 256-bit entropy.`,
     );
   }
 
-  if (typeof randomGenerator.generateRandomString === 'function') {
+  if (typeof randomGenerator.generateRandomString === "function") {
     return randomGenerator.generateRandomString(length, BASE64_CHARSET);
   }
 
-  let result = '';
+  let result = "";
   for (let i = 0; i < length; i++) {
-    const index = await randomGenerator.generateRandomInt(BASE64_CHARSET.length);
+    const index = await randomGenerator.generateRandomInt(
+      BASE64_CHARSET.length,
+    );
     result += BASE64_CHARSET[index];
   }
   return result;
@@ -71,16 +75,16 @@ export const generateQuantumChunk = async (length, randomGenerator) => {
 export const generateQuantumPassword = async (config, randomGenerator) => {
   const { length, iteration, separator } = config;
 
-  validatePositiveInteger(length, 'length');
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(length, "length");
+  validatePositiveInteger(iteration, "iteration");
 
   // Ensure total entropy meets quantum-resistant requirements
   const totalEntropy = calculateQuantumPasswordEntropy(config);
   if (totalEntropy < QUANTUM_ENTROPY_TARGET_BITS) {
     console.warn(
       `Warning: Total entropy (${totalEntropy.toFixed(
-        1
-      )} bits) is below quantum-resistant target (${QUANTUM_ENTROPY_TARGET_BITS} bits).`
+        1,
+      )} bits) is below quantum-resistant target (${QUANTUM_ENTROPY_TARGET_BITS} bits).`,
     );
   }
 

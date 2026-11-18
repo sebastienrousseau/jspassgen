@@ -8,11 +8,11 @@
  * @module generators/pronounceable
  */
 
-import { validatePositiveInteger } from '../domain/base64-generation.js';
+import { validatePositiveInteger } from "../domain/base64-generation.js";
 
 // Character sets for pronounceable password generation
-const CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
-const VOWELS = 'aeiou';
+const CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+const VOWELS = "aeiou";
 
 /**
  * Generates a single CVVC (consonant-vowel-vowel-consonant) syllable.
@@ -21,10 +21,12 @@ const VOWELS = 'aeiou';
  * @returns {Promise<string>} A CVVC syllable.
  */
 export const generateCVVCSyllable = async (randomGenerator) => {
-  const consonant1 = CONSONANTS[await randomGenerator.generateRandomInt(CONSONANTS.length)];
+  const consonant1 =
+    CONSONANTS[await randomGenerator.generateRandomInt(CONSONANTS.length)];
   const vowel1 = VOWELS[await randomGenerator.generateRandomInt(VOWELS.length)];
   const vowel2 = VOWELS[await randomGenerator.generateRandomInt(VOWELS.length)];
-  const consonant2 = CONSONANTS[await randomGenerator.generateRandomInt(CONSONANTS.length)];
+  const consonant2 =
+    CONSONANTS[await randomGenerator.generateRandomInt(CONSONANTS.length)];
 
   return consonant1 + vowel1 + vowel2 + consonant2;
 };
@@ -38,10 +40,13 @@ export const generateCVVCSyllable = async (randomGenerator) => {
  * @param {Object} randomGenerator - RandomGeneratorPort implementation.
  * @returns {Promise<string>} The generated pronounceable password.
  */
-export const generatePronounceablePassword = async (config, randomGenerator) => {
+export const generatePronounceablePassword = async (
+  config,
+  randomGenerator,
+) => {
   const { iteration, separator } = config;
 
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(iteration, "iteration");
 
   const syllables = [];
   for (let i = 0; i < iteration; i++) {
@@ -69,7 +74,8 @@ export const calculatePronounceablePasswordEntropy = (config) => {
   // Total per syllable: ~13.42 bits
   const consonantEntropy = Math.log2(CONSONANTS.length); // ~4.39 bits
   const vowelEntropy = Math.log2(VOWELS.length); // ~2.32 bits
-  const syllableEntropy = consonantEntropy + 2 * vowelEntropy + consonantEntropy; // ~13.42 bits
+  const syllableEntropy =
+    consonantEntropy + 2 * vowelEntropy + consonantEntropy; // ~13.42 bits
 
   return iteration * syllableEntropy;
 };

@@ -12,7 +12,13 @@
  */
 
 import { build } from "esbuild";
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from "fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  readdirSync,
+} from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -45,7 +51,7 @@ let html = readFileSync(join(SRC, "index.html"), "utf-8");
 // Update script reference to bundled version
 html = html.replace(
   '<script type="module" src="scripts/main.js"></script>',
-  '<script type="module" src="bundle.js"></script>'
+  '<script type="module" src="bundle.js"></script>',
 );
 
 // Update CSS paths (flatten to same directory)

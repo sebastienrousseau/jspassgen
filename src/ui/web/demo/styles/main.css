@@ -8,16 +8,16 @@
 /* ============================================
  * Import Modular Stylesheets
  * ============================================ */
-@import './tokens.css';
-@import './base.css';
-@import './components.css';
-@import './utilities.css';
+@import "./tokens.css";
+@import "./base.css";
+@import "./components.css";
+@import "./utilities.css";
 
 /* ============================================
  * Ethereal Animated Background
  * ============================================ */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -25,16 +25,33 @@ body::before {
   bottom: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(255, 107, 157, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(157, 78, 221, 0.30) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 40% 80%, rgba(0, 217, 255, 0.20) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 50% at 70% 20%, rgba(255, 71, 133, 0.25) 0%, transparent 50%);
+    radial-gradient(
+      ellipse 80% 50% at 20% 40%,
+      rgba(255, 107, 157, 0.35) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 60%,
+      rgba(157, 78, 221, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 50% 30% at 40% 80%,
+      rgba(0, 217, 255, 0.2) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 40% 50% at 70% 20%,
+      rgba(255, 71, 133, 0.25) 0%,
+      transparent 50%
+    );
   animation: ethereal-drift 20s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes ethereal-drift {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
     opacity: 1;
   }
@@ -54,7 +71,7 @@ body::before {
 
 /* Secondary floating orb layer */
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -62,14 +79,23 @@ body::after {
   bottom: 0;
   z-index: -1;
   background:
-    radial-gradient(circle 300px at 10% 90%, rgba(61, 255, 163, 0.15) 0%, transparent 50%),
-    radial-gradient(circle 400px at 90% 10%, rgba(255, 184, 108, 0.12) 0%, transparent 50%);
+    radial-gradient(
+      circle 300px at 10% 90%,
+      rgba(61, 255, 163, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle 400px at 90% 10%,
+      rgba(255, 184, 108, 0.12) 0%,
+      transparent 50%
+    );
   animation: ethereal-float 15s ease-in-out infinite reverse;
   pointer-events: none;
 }
 
 @keyframes ethereal-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
     opacity: 0.8;
   }
@@ -90,16 +116,40 @@ body::after {
 /* Light theme ethereal background - more visible with adjusted colors */
 [data-theme="light"] body::before {
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(209, 70, 113, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(123, 44, 191, 0.20) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 40% 80%, rgba(8, 145, 178, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 50% at 70% 20%, rgba(209, 70, 113, 0.18) 0%, transparent 50%);
+    radial-gradient(
+      ellipse 80% 50% at 20% 40%,
+      rgba(209, 70, 113, 0.25) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 60%,
+      rgba(123, 44, 191, 0.2) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 50% 30% at 40% 80%,
+      rgba(8, 145, 178, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 40% 50% at 70% 20%,
+      rgba(209, 70, 113, 0.18) 0%,
+      transparent 50%
+    );
 }
 
 [data-theme="light"] body::after {
   background:
-    radial-gradient(circle 300px at 10% 90%, rgba(5, 150, 105, 0.12) 0%, transparent 50%),
-    radial-gradient(circle 400px at 90% 10%, rgba(194, 65, 12, 0.10) 0%, transparent 50%);
+    radial-gradient(
+      circle 300px at 10% 90%,
+      rgba(5, 150, 105, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle 400px at 90% 10%,
+      rgba(194, 65, 12, 0.1) 0%,
+      transparent 50%
+    );
 }
 
 /* ============================================
@@ -207,7 +257,8 @@ select:focus-visible {
 /* Disable animations for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   @keyframes focus-spring {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
       outline-width: var(--focus-ring-width);
     }

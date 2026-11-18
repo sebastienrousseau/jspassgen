@@ -54,114 +54,114 @@ export const STRENGTH_CONSTANTS = {
  * Common weak passwords (subset for performance)
  */
 export const COMMON_PASSWORDS = new Set([
-  'password',
-  'password1',
-  'password123',
-  '123456',
-  '123456789',
-  'qwerty',
-  'abc123',
-  'Password1',
-  'welcome',
-  'admin',
-  'letmein',
-  'monkey',
-  'dragon',
-  'master',
-  'hello',
-  'freedom',
-  'whatever',
-  'qazwsx',
-  'trustno1',
-  'jordan',
-  'iloveyou',
-  'princess',
-  'starwars',
-  'shadow',
-  'superman',
-  'sunshine',
-  'michael',
-  'computer',
-  'football',
-  'pepper',
-  'mustang',
-  'charlie',
+  "password",
+  "password1",
+  "password123",
+  "123456",
+  "123456789",
+  "qwerty",
+  "abc123",
+  "Password1",
+  "welcome",
+  "admin",
+  "letmein",
+  "monkey",
+  "dragon",
+  "master",
+  "hello",
+  "freedom",
+  "whatever",
+  "qazwsx",
+  "trustno1",
+  "jordan",
+  "iloveyou",
+  "princess",
+  "starwars",
+  "shadow",
+  "superman",
+  "sunshine",
+  "michael",
+  "computer",
+  "football",
+  "pepper",
+  "mustang",
+  "charlie",
 ]);
 
 /**
  * Common dictionary words (subset for demonstration)
  */
 export const COMMON_DICTIONARY = new Set([
-  'the',
-  'and',
-  'for',
-  'are',
-  'but',
-  'not',
-  'you',
-  'all',
-  'can',
-  'had',
-  'her',
-  'was',
-  'one',
-  'our',
-  'out',
-  'day',
-  'get',
-  'has',
-  'him',
-  'his',
-  'how',
-  'man',
-  'new',
-  'now',
-  'old',
-  'see',
-  'two',
-  'way',
-  'who',
-  'boy',
-  'did',
-  'its',
-  'let',
-  'put',
-  'say',
-  'she',
-  'too',
-  'use',
-  'love',
-  'time',
-  'very',
-  'when',
-  'come',
-  'here',
-  'just',
-  'like',
-  'long',
-  'make',
-  'many',
-  'over',
-  'such',
-  'take',
-  'than',
-  'them',
-  'well',
-  'were',
-  'what',
-  'year',
-  'your',
-  'work',
-  'life',
-  'only',
-  'think',
-  'first',
-  'after',
-  'back',
-  'other',
-  'good',
-  'want',
-  'give',
+  "the",
+  "and",
+  "for",
+  "are",
+  "but",
+  "not",
+  "you",
+  "all",
+  "can",
+  "had",
+  "her",
+  "was",
+  "one",
+  "our",
+  "out",
+  "day",
+  "get",
+  "has",
+  "him",
+  "his",
+  "how",
+  "man",
+  "new",
+  "now",
+  "old",
+  "see",
+  "two",
+  "way",
+  "who",
+  "boy",
+  "did",
+  "its",
+  "let",
+  "put",
+  "say",
+  "she",
+  "too",
+  "use",
+  "love",
+  "time",
+  "very",
+  "when",
+  "come",
+  "here",
+  "just",
+  "like",
+  "long",
+  "make",
+  "many",
+  "over",
+  "such",
+  "take",
+  "than",
+  "them",
+  "well",
+  "were",
+  "what",
+  "year",
+  "your",
+  "work",
+  "life",
+  "only",
+  "think",
+  "first",
+  "after",
+  "back",
+  "other",
+  "good",
+  "want",
+  "give",
 ]);
 
 /**
@@ -176,20 +176,20 @@ export const detectWeaknessPatterns = (password) => {
   let matches = password.match(WEAKNESS_PATTERNS.sequence);
   if (matches) {
     patterns.push({
-      pattern: 'sequence',
+      pattern: "sequence",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.sequence,
-      description: 'Contains alphabetic or numeric sequences',
+      description: "Contains alphabetic or numeric sequences",
     });
   }
 
   matches = password.match(WEAKNESS_PATTERNS.reverseSequence);
   if (matches) {
     patterns.push({
-      pattern: 'reverse_sequence',
+      pattern: "reverse_sequence",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.reverse_sequence,
-      description: 'Contains reverse sequences',
+      description: "Contains reverse sequences",
     });
   }
 
@@ -197,20 +197,20 @@ export const detectWeaknessPatterns = (password) => {
   matches = password.match(WEAKNESS_PATTERNS.qwertyRow);
   if (matches) {
     patterns.push({
-      pattern: 'keyboard_row',
+      pattern: "keyboard_row",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.keyboard_row,
-      description: 'Contains keyboard row patterns',
+      description: "Contains keyboard row patterns",
     });
   }
 
   matches = password.match(WEAKNESS_PATTERNS.qwertyCol);
   if (matches) {
     patterns.push({
-      pattern: 'keyboard_column',
+      pattern: "keyboard_column",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.keyboard_column,
-      description: 'Contains keyboard column patterns',
+      description: "Contains keyboard column patterns",
     });
   }
 
@@ -218,20 +218,20 @@ export const detectWeaknessPatterns = (password) => {
   matches = password.match(WEAKNESS_PATTERNS.repeated);
   if (matches) {
     patterns.push({
-      pattern: 'repetition',
+      pattern: "repetition",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.repetition,
-      description: 'Contains character repetition',
+      description: "Contains character repetition",
     });
   }
 
   matches = password.match(WEAKNESS_PATTERNS.alternating);
   if (matches) {
     patterns.push({
-      pattern: 'alternating',
+      pattern: "alternating",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.alternating,
-      description: 'Contains alternating patterns',
+      description: "Contains alternating patterns",
     });
   }
 
@@ -239,10 +239,10 @@ export const detectWeaknessPatterns = (password) => {
   matches = password.match(WEAKNESS_PATTERNS.leetSpeak);
   if (matches) {
     patterns.push({
-      pattern: 'leet_speak',
+      pattern: "leet_speak",
       matches: matches,
       score: STRENGTH_CONSTANTS.PATTERN_PENALTIES.leet_speak,
-      description: 'Uses common character substitutions',
+      description: "Uses common character substitutions",
     });
   }
 
@@ -261,10 +261,10 @@ export const checkDictionaryWeakness = (password) => {
   // Check against common passwords
   if (COMMON_PASSWORDS.has(lowerPassword)) {
     matches.push({
-      dictionary: 'common_passwords',
+      dictionary: "common_passwords",
       word: password,
       score: STRENGTH_CONSTANTS.DICTIONARY_PENALTIES.common_passwords,
-      description: 'Found in common passwords list',
+      description: "Found in common passwords list",
     });
   }
 
@@ -273,7 +273,7 @@ export const checkDictionaryWeakness = (password) => {
   for (const word of words) {
     if (word.length > 3 && COMMON_DICTIONARY.has(word)) {
       matches.push({
-        dictionary: 'english_words',
+        dictionary: "english_words",
         word: word,
         score: STRENGTH_CONSTANTS.DICTIONARY_PENALTIES.english_words,
         description: `Contains dictionary word: ${word}`,
@@ -283,10 +283,10 @@ export const checkDictionaryWeakness = (password) => {
 
   // Check for reversed dictionary words
   for (const word of words) {
-    const reversed = word.split('').reverse().join('');
+    const reversed = word.split("").reverse().join("");
     if (reversed.length > 3 && COMMON_DICTIONARY.has(reversed)) {
       matches.push({
-        dictionary: 'reversed_words',
+        dictionary: "reversed_words",
         word: word,
         score: STRENGTH_CONSTANTS.DICTIONARY_PENALTIES.reversed_words,
         description: `Contains reversed dictionary word: ${reversed}`,
@@ -320,7 +320,8 @@ export const analyzePasswordComposition = (password) => {
   if (analysis.hasSymbols) charsetSize += 32; // Approximate
 
   analysis.charsetSize = charsetSize;
-  analysis.entropy = charsetSize > 0 ? Math.log2(charsetSize) * password.length : 0;
+  analysis.entropy =
+    charsetSize > 0 ? Math.log2(charsetSize) * password.length : 0;
 
   return analysis;
 };
@@ -344,7 +345,7 @@ export const calculateStrengthScore = (composition, patterns, dictionaries) => {
   }
 
   // Heavy penalties for dictionary matches
-  if (dictionaries.some((d) => d.dictionary === 'common_passwords')) {
+  if (dictionaries.some((d) => d.dictionary === "common_passwords")) {
     return STRENGTH_CONSTANTS.VERY_WEAK; // Override to weakest
   } else if (dictionaries.length > 0) {
     score = Math.max(STRENGTH_CONSTANTS.VERY_WEAK, score - 2);
@@ -352,10 +353,16 @@ export const calculateStrengthScore = (composition, patterns, dictionaries) => {
 
   // Pattern penalties
   const patternPenalty = patterns.reduce((sum, p) => sum + (1 - p.score), 0);
-  score = Math.max(STRENGTH_CONSTANTS.VERY_WEAK, score - Math.floor(patternPenalty / 2));
+  score = Math.max(
+    STRENGTH_CONSTANTS.VERY_WEAK,
+    score - Math.floor(patternPenalty / 2),
+  );
 
   // Ensure score is within bounds
-  return Math.max(STRENGTH_CONSTANTS.VERY_WEAK, Math.min(STRENGTH_CONSTANTS.STRONG, score));
+  return Math.max(
+    STRENGTH_CONSTANTS.VERY_WEAK,
+    Math.min(STRENGTH_CONSTANTS.STRONG, score),
+  );
 };
 
 /**
@@ -365,17 +372,22 @@ export const calculateStrengthScore = (composition, patterns, dictionaries) => {
  * @param {Array} dictionaries - Dictionary matches
  * @returns {number} Effective entropy in bits
  */
-export const calculateEffectiveEntropy = (composition, patterns, dictionaries) => {
+export const calculateEffectiveEntropy = (
+  composition,
+  patterns,
+  dictionaries,
+) => {
   // Start with base entropy
   let effectiveEntropy = composition.entropy;
 
   // Heavy reduction for common passwords
-  if (dictionaries.some((d) => d.dictionary === 'common_passwords')) {
+  if (dictionaries.some((d) => d.dictionary === "common_passwords")) {
     return 1; // Extremely weak
   }
 
   // Apply reduction based on patterns and dictionary matches
-  const patternReduction = patterns.reduce((sum, p) => sum + (1 - p.score), 0) * 0.2;
+  const patternReduction =
+    patterns.reduce((sum, p) => sum + (1 - p.score), 0) * 0.2;
   const dictionaryReduction = dictionaries.length * 0.1;
   const totalReduction = Math.min(0.8, patternReduction + dictionaryReduction);
 
@@ -390,7 +402,12 @@ export const calculateEffectiveEntropy = (composition, patterns, dictionaries) =
  * @param {Object} composition - Password composition analysis
  * @returns {Object} Feedback with suggestions and recommendations
  */
-export const generateStrengthFeedback = (score, patterns, dictionaries, composition) => {
+export const generateStrengthFeedback = (
+  score,
+  patterns,
+  dictionaries,
+  composition,
+) => {
   const feedback = {
     suggestions: [],
     warning: null,
@@ -399,59 +416,69 @@ export const generateStrengthFeedback = (score, patterns, dictionaries, composit
 
   // Length recommendations
   if (composition.length < 8) {
-    feedback.suggestions.push('Use at least 8 characters');
+    feedback.suggestions.push("Use at least 8 characters");
   } else if (composition.length < 12) {
-    feedback.suggestions.push('Consider using 12 or more characters for better security');
+    feedback.suggestions.push(
+      "Consider using 12 or more characters for better security",
+    );
   }
 
   // Character set recommendations
   if (!composition.hasLowercase) {
-    feedback.suggestions.push('Add lowercase letters');
+    feedback.suggestions.push("Add lowercase letters");
   }
   if (!composition.hasUppercase) {
-    feedback.suggestions.push('Add uppercase letters');
+    feedback.suggestions.push("Add uppercase letters");
   }
   if (!composition.hasNumbers) {
-    feedback.suggestions.push('Add numbers');
+    feedback.suggestions.push("Add numbers");
   }
   if (!composition.hasSymbols) {
-    feedback.suggestions.push('Add symbols');
+    feedback.suggestions.push("Add symbols");
   }
 
   // Pattern-specific feedback
-  if (patterns.some((p) => p.pattern === 'sequence' || p.pattern === 'reverse_sequence')) {
-    feedback.suggestions.push('Avoid sequences (e.g., abc, 123)');
+  if (
+    patterns.some(
+      (p) => p.pattern === "sequence" || p.pattern === "reverse_sequence",
+    )
+  ) {
+    feedback.suggestions.push("Avoid sequences (e.g., abc, 123)");
   }
 
-  if (patterns.some((p) => p.pattern.includes('keyboard'))) {
-    feedback.suggestions.push('Avoid keyboard patterns (e.g., qwerty, asdf)');
+  if (patterns.some((p) => p.pattern.includes("keyboard"))) {
+    feedback.suggestions.push("Avoid keyboard patterns (e.g., qwerty, asdf)");
   }
 
-  if (patterns.some((p) => p.pattern === 'repetition')) {
-    feedback.suggestions.push('Avoid repeated characters (e.g., aaa, 111)');
+  if (patterns.some((p) => p.pattern === "repetition")) {
+    feedback.suggestions.push("Avoid repeated characters (e.g., aaa, 111)");
   }
 
-  if (patterns.some((p) => p.pattern === 'leet_speak')) {
-    feedback.suggestions.push('Predictable substitutions like @ for a are easy to guess');
+  if (patterns.some((p) => p.pattern === "leet_speak")) {
+    feedback.suggestions.push(
+      "Predictable substitutions like @ for a are easy to guess",
+    );
   }
 
   // Dictionary-specific feedback
-  if (dictionaries.some((d) => d.dictionary === 'common_passwords')) {
-    feedback.warning = 'This is a very common password';
-    feedback.suggestions.push('Avoid common passwords');
+  if (dictionaries.some((d) => d.dictionary === "common_passwords")) {
+    feedback.warning = "This is a very common password";
+    feedback.suggestions.push("Avoid common passwords");
   }
 
-  if (dictionaries.some((d) => d.dictionary === 'english_words')) {
-    feedback.suggestions.push('Avoid dictionary words');
+  if (dictionaries.some((d) => d.dictionary === "english_words")) {
+    feedback.suggestions.push("Avoid dictionary words");
   }
 
   // Overall recommendations
   if (score <= STRENGTH_CONSTANTS.WEAK) {
-    feedback.recommendations.push('Consider using a password manager');
-    feedback.recommendations.push('Use a passphrase with multiple random words');
+    feedback.recommendations.push("Consider using a password manager");
+    feedback.recommendations.push(
+      "Use a passphrase with multiple random words",
+    );
   } else if (score <= STRENGTH_CONSTANTS.FAIR) {
-    feedback.recommendations.push('Consider adding more complexity');
-    feedback.recommendations.push('Avoid predictable patterns');
+    feedback.recommendations.push("Consider adding more complexity");
+    feedback.recommendations.push("Avoid predictable patterns");
   }
 
   return feedback;
@@ -463,13 +490,13 @@ export const generateStrengthFeedback = (score, patterns, dictionaries, composit
  * @returns {Object} Complete strength analysis with score, feedback, and recommendations
  */
 export const analyzePasswordStrength = (password) => {
-  if (!password || typeof password !== 'string') {
+  if (!password || typeof password !== "string") {
     return {
       score: STRENGTH_CONSTANTS.VERY_WEAK,
       entropy: 0,
       feedback: {
-        warning: 'Password is required',
-        suggestions: ['Enter a password'],
+        warning: "Password is required",
+        suggestions: ["Enter a password"],
         recommendations: [],
       },
       patterns: [],
@@ -485,10 +512,19 @@ export const analyzePasswordStrength = (password) => {
 
   // Calculate scores
   const score = calculateStrengthScore(composition, patterns, dictionaries);
-  const effectiveEntropy = calculateEffectiveEntropy(composition, patterns, dictionaries);
+  const effectiveEntropy = calculateEffectiveEntropy(
+    composition,
+    patterns,
+    dictionaries,
+  );
 
   // Generate feedback
-  const feedback = generateStrengthFeedback(score, patterns, dictionaries, composition);
+  const feedback = generateStrengthFeedback(
+    score,
+    patterns,
+    dictionaries,
+    composition,
+  );
 
   return {
     score,
@@ -503,7 +539,9 @@ export const analyzePasswordStrength = (password) => {
       reductionFactors: {
         patterns: patterns.length,
         dictionaries: dictionaries.length,
-        commonPassword: dictionaries.some((d) => d.dictionary === 'common_passwords'),
+        commonPassword: dictionaries.some(
+          (d) => d.dictionary === "common_passwords",
+        ),
       },
     },
   };
@@ -515,8 +553,8 @@ export const analyzePasswordStrength = (password) => {
  * @returns {string} Strength label
  */
 export const getStrengthLabel = (score) => {
-  const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-  return labels[score] || 'Unknown';
+  const labels = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
+  return labels[score] || "Unknown";
 };
 
 /**
@@ -526,11 +564,11 @@ export const getStrengthLabel = (score) => {
  */
 export const getStrengthColor = (score) => {
   const colors = [
-    '#d73502', // Very Weak - Red
-    '#f56500', // Weak - Orange-Red
-    '#f7a800', // Fair - Orange
-    '#8bc34a', // Good - Light Green
-    '#4caf50', // Strong - Green
+    "#d73502", // Very Weak - Red
+    "#f56500", // Weak - Orange-Red
+    "#f7a800", // Fair - Orange
+    "#8bc34a", // Good - Light Green
+    "#4caf50", // Strong - Green
   ];
-  return colors[score] || '#666';
+  return colors[score] || "#666";
 };

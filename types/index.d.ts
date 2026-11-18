@@ -17,7 +17,7 @@
 /**
  * Valid password types supported by the generator.
  */
-export type PasswordType = 'strong' | 'base64' | 'memorable';
+export type PasswordType = "strong" | "base64" | "memorable";
 
 /**
  * Configuration options for password generation.
@@ -170,7 +170,9 @@ export interface CryptoUtils {
  * });
  * ```
  */
-export declare function PasswordGenerator(data: PasswordGeneratorOptions): Promise<string>;
+export declare function PasswordGenerator(
+  data: PasswordGeneratorOptions,
+): Promise<string>;
 
 /**
  * Generate a strong password.
@@ -178,7 +180,9 @@ export declare function PasswordGenerator(data: PasswordGeneratorOptions): Promi
  * @param options - Strong password generation options
  * @returns The generated strong password
  */
-export declare function generateStrongPassword(options: StrongPasswordOptions): string;
+export declare function generateStrongPassword(
+  options: StrongPasswordOptions,
+): string;
 
 /**
  * Generate a base64 password.
@@ -186,7 +190,9 @@ export declare function generateStrongPassword(options: StrongPasswordOptions): 
  * @param options - Base64 password generation options
  * @returns The generated base64 password
  */
-export declare function generateBase64Password(options: Base64PasswordOptions): string;
+export declare function generateBase64Password(
+  options: Base64PasswordOptions,
+): string;
 
 /**
  * Generate a memorable password.
@@ -194,7 +200,9 @@ export declare function generateBase64Password(options: Base64PasswordOptions): 
  * @param options - Memorable password generation options
  * @returns The generated memorable password
  */
-export declare function generateMemorablePassword(options: MemorablePasswordOptions): string;
+export declare function generateMemorablePassword(
+  options: MemorablePasswordOptions,
+): string;
 
 /**
  * Validate password type.
@@ -237,41 +245,44 @@ export { PasswordGenerator as default };
  * Preset configuration for generating strong passwords.
  */
 export interface StrongPasswordPreset {
-  type: 'strong';
+  type: "strong";
   length: 16;
   iteration: 3;
-  separator: '-';
+  separator: "-";
 }
 
 /**
  * Preset configuration for generating memorable passwords.
  */
 export interface MemorablePasswordPreset {
-  type: 'memorable';
+  type: "memorable";
   iteration: 4;
-  separator: '-';
+  separator: "-";
 }
 
 /**
  * Preset configuration for generating base64 passwords.
  */
 export interface Base64PasswordPreset {
-  type: 'base64';
+  type: "base64";
   length: 12;
   iteration: 2;
-  separator: '+';
+  separator: "+";
 }
 
 /**
  * Union type of all preset configurations.
  */
-export type PasswordPreset = StrongPasswordPreset | MemorablePasswordPreset | Base64PasswordPreset;
+export type PasswordPreset =
+  StrongPasswordPreset | MemorablePasswordPreset | Base64PasswordPreset;
 
 /**
  * Helper type to extract options by password type.
  */
-export type OptionsForType<T extends PasswordType> =
-  T extends 'strong' ? StrongPasswordOptions :
-  T extends 'base64' ? Base64PasswordOptions :
-  T extends 'memorable' ? MemorablePasswordOptions :
-  never;
+export type OptionsForType<T extends PasswordType> = T extends "strong"
+  ? StrongPasswordOptions
+  : T extends "base64"
+    ? Base64PasswordOptions
+    : T extends "memorable"
+      ? MemorablePasswordOptions
+      : never;
