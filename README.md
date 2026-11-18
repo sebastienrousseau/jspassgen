@@ -152,7 +152,7 @@ conformance kit as its generators land.
 | [`jspassgen.github.io`](https://github.com/sebastienrousseau/jspassgen.github.io) | Source of [jspassgen.com](https://jspassgen.com) | Evaluating the suite |
 
 Only `@sebastienrousseau/jspassgen` is on a package registry so far
-(0.0.21 on npm). The table gives each member's purpose; the other members
+(0.0.22 on npm). The table gives each member's purpose; the other members
 are early, each README's Capabilities at a glance says what works today,
 and they first publish with the suite's first lockstep release.
 
@@ -352,7 +352,7 @@ fixed the web UI and Web Worker, which built the core without a word list:
 strength. The hosted demo picked up the fix once the Pages workflow began
 building from `main` (see [`CHANGELOG.md`](CHANGELOG.md)).
 
-0.0.21 is published to npm with provenance (SLSA provenance v1), and CI
+0.0.22 is published to npm with provenance (SLSA provenance v1), and CI
 runs `npm audit` and a Codacy scan.
 
 ---
