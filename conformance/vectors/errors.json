@@ -1,0 +1,104 @@
+{
+  "group": "errors",
+  "vectors": [
+    {
+      "id": "error-type-missing",
+      "input": {
+        "length": 16,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Password type is required"
+      }
+    },
+    {
+      "id": "error-type-unknown",
+      "input": {
+        "type": "rot13",
+        "length": 16,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Unknown password type: \"rot13\". Valid types: strong, base64, memorable, quantum-resistant, diceware, honeyword, pronounceable, custom"
+      }
+    },
+    {
+      "id": "error-iteration-zero",
+      "input": {
+        "type": "strong",
+        "length": 16,
+        "iteration": 0,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Iteration must be a positive integer"
+      }
+    },
+    {
+      "id": "error-length-zero",
+      "input": {
+        "type": "strong",
+        "length": 0,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Length must be at least 1"
+      }
+    },
+    {
+      "id": "error-quantum-too-short",
+      "input": {
+        "type": "quantum-resistant",
+        "length": 16,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Length must be at least 32"
+      }
+    },
+    {
+      "id": "error-honeyword-single",
+      "input": {
+        "type": "honeyword",
+        "length": 12,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Honeyword generation requires at least 2 passwords (1 real + 1 decoy minimum)"
+      }
+    },
+    {
+      "id": "error-custom-all-forbidden",
+      "input": {
+        "type": "custom",
+        "allowedChars": "abc",
+        "forbiddenChars": "abc",
+        "length": 8,
+        "iteration": 1,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [],
+      "expected": {
+        "error": "Custom character set cannot be empty after applying forbidden character filter"
+      }
+    }
+  ]
+}

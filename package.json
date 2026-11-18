@@ -194,7 +194,9 @@
     "benchmark:bulk": "node benchmarks/bulk-generation.bench.js",
     "benchmark:crypto": "node benchmarks/crypto-vs-mathrand.bench.js",
     "benchmark:entropy": "node benchmarks/entropy-calculation.bench.js",
-    "benchmark:generation": "node benchmarks/password-generation.bench.js"
+    "benchmark:generation": "node benchmarks/password-generation.bench.js",
+    "conformance:generate": "node scripts/conformance/generate.js",
+    "conformance:check": "node scripts/conformance/generate.js --check"
   },
   "type": "module",
   "version": "0.0.21",

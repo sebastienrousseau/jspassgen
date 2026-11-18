@@ -5,6 +5,7 @@
 Invariants and guidelines for AI-assisted contributors working in `jspassgen` (JavaScript Password Generator).
 
 This repository strictly conforms to the global standards defined in:
+
 - [`/Users/seb/Code/AGENTS.md`](/Users/seb/Code/AGENTS.md) (Code Repositories Standard)
 - [`/Users/seb/Code/PR-TEMPLATE.md`](/Users/seb/Code/PR-TEMPLATE.md) (PR Description Specification)
 - [`/Users/seb/Code/README-TEMPLATE.md`](/Users/seb/Code/README-TEMPLATE.md) (Canonical README Specification)
@@ -19,6 +20,7 @@ Read this whole file before modifying any code.
 `jspassgen` (JavaScript Password Generator) is a fast, simple, and powerful utility for generating strong, unique, cryptographically secure passwords and passphrases across Node.js, CLI, and Web environments.
 
 Core principles:
+
 - **Cryptographic Security**: Exclusively powered by CSPRNG (`crypto.randomInt` in Node.js, `crypto.getRandomValues` in Web / Workers). No `Math.random()`.
 - **Runtime-Agnostic Core**: `packages/core` is zero-dependency and platform-independent, working seamlessly across Node.js, browsers, and edge workers.
 - **Dual Licensing**: Apache-2.0 OR MIT.
@@ -28,8 +30,9 @@ Core principles:
 ## 0. Hygiene first
 
 Before starting any feature, fix, or release work:
+
 1. Run `npm audit` and check open Dependabot alerts (`gh pr list --author app/dependabot`).
-2. Verify CI on default branch (`master`) is green.
+2. Verify CI on default branch (`main`) is green.
 3. Lint and tests pass with zero warnings: `npm test && npm run lint`.
 4. Complexity ceilings per function:
    - McCabe Cyclomatic: <= 10
@@ -41,10 +44,10 @@ Before starting any feature, fix, or release work:
 
 ## 1. Versioning and branch lifecycle
 
-- **Version increments**: Current version is `v0.0.20`. Every new iteration increments strictly by `0.0.1` (`v0.0.20` -> `v0.0.21`).
-- **Release branch**: Work for the next iteration belongs on `feat/v<next-version>` (e.g. `feat/v0.0.21`). Never leave release work on `master` or unrelated topic branches.
-- **Single active release PR**: At most ONE active pull request targeting `master` across this repository, which MUST be `feat/v<next-version>`.
-- **Branch funneling**: All Dependabot PRs, security fixes, and feature commits MUST be merged into the active `feat/v<next-version>` branch, never directly into `master`. Standalone PRs targeting `master` are closed with a comment linking the release PR.
+- **Version increments**: The current version is the `version` in `package.json`; the last released one is the latest `v*` tag. Every new iteration increments strictly by `0.0.1` (for example `v0.0.21` -> `v0.0.22`).
+- **Release branch**: Work for the next iteration belongs on `feat/v<next-version>`, one step past the last released tag. Never leave release work on `main` or unrelated topic branches.
+- **Single active release PR**: At most ONE active pull request targeting `main` across this repository, which MUST be `feat/v<next-version>`.
+- **Branch funneling**: All Dependabot PRs, security fixes, and feature commits MUST be merged into the active `feat/v<next-version>` branch, never directly into `main`. Standalone PRs targeting `main` are closed with a comment linking the release PR.
 
 ---
 
@@ -54,14 +57,15 @@ Before starting any feature, fix, or release work:
 - **Signing**: Enforce SSH commit signing (`commit.gpgsign=true`) and format signoffs (`format.signoff=true`).
 - **Attribution**: Commits assisted by AI carry the trailer:
   `Assisted-by: <agent>:<model> [<analysis tools>]`
-- **Agent accountability**: Agents MUST NOT add `Signed-off-by:` or sign off on DCO/CLA on a person's behalf.
-- **Merge authority**: NEVER merge a PR into `master` or a protected branch unless explicitly instructed by the maintainer for that specific PR.
+- **Agent accountability**: Every commit carries the maintainer's `Signed-off-by:` (`git commit -s`), from their git identity only: never an agent, bot or co-author, and never a second line. Agents make no other certification (CLA, licence, terms) on a person's behalf.
+- **Merge authority**: NEVER merge a PR into `main` or a protected branch unless explicitly instructed by the maintainer for that specific PR.
 
 ---
 
 ## 3. Validation and definition of done
 
 Before claiming completion of any task:
+
 1. **Single gate**: Run `npm test` (c8 mocha coverage suite).
 2. **Linting**: Run `npm run lint` and `npm run lint:markdown`.
 3. **Core isolation verification**: Run `npm run verify:core` (`./scripts/verify-core-isolation.sh` and `node scripts/verify-core-deps.js`).
@@ -73,6 +77,7 @@ Before claiming completion of any task:
 ## 4. Pull request descriptions
 
 Follow `/Users/seb/Code/PR-TEMPLATE.md` strictly:
+
 - Two-line BLUF (Bottom Line Up Front) separated by a blank line:
   - Line 1: `This PR <announces what it does, in one plain line>.`
   - Line 2: `<why it matters or outcome, in one plain line>.`

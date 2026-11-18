@@ -1,0 +1,77 @@
+{
+  "group": "memorable",
+  "vectors": [
+    {
+      "id": "memorable-4-dash",
+      "input": {
+        "type": "memorable",
+        "iteration": 4,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          7776,
+          7306
+        ],
+        [
+          7776,
+          2321
+        ],
+        [
+          7776,
+          6624
+        ],
+        [
+          7776,
+          102
+        ]
+      ],
+      "expected": {
+        "password": "unstopped-equivocal-swung-ahoy",
+        "entropy": 51.7,
+        "securityLevel": "WEAK"
+      }
+    },
+    {
+      "id": "memorable-6-space",
+      "input": {
+        "type": "memorable",
+        "iteration": 6,
+        "separator": " "
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          7776,
+          7608
+        ],
+        [
+          7776,
+          3008
+        ],
+        [
+          7776,
+          798
+        ],
+        [
+          7776,
+          563
+        ],
+        [
+          7776,
+          2988
+        ],
+        [
+          7776,
+          4815
+        ]
+      ],
+      "expected": {
+        "password": "water grief camcorder blissful gratuity prescribe",
+        "entropy": 77.55,
+        "securityLevel": "MODERATE"
+      }
+    }
+  ]
+}

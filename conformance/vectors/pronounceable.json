@@ -1,0 +1,149 @@
+{
+  "group": "pronounceable",
+  "vectors": [
+    {
+      "id": "pronounceable-4-dash",
+      "input": {
+        "type": "pronounceable",
+        "iteration": 4,
+        "separator": "-"
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          21,
+          12
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          21,
+          9
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          21,
+          5
+        ],
+        [
+          21,
+          12
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          21,
+          0
+        ]
+      ],
+      "expected": {
+        "password": "qein-zuem-zaeh-qaeb",
+        "entropy": 53.71,
+        "securityLevel": "WEAK"
+      }
+    },
+    {
+      "id": "pronounceable-3-dot",
+      "input": {
+        "type": "pronounceable",
+        "iteration": 3,
+        "separator": "."
+      },
+      "dictionary": "eff-diceware",
+      "draws": [
+        [
+          21,
+          13
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          21,
+          13
+        ],
+        [
+          21,
+          10
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          21,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          21,
+          11
+        ]
+      ],
+      "expected": {
+        "password": "reir.nuip.ciop",
+        "entropy": 40.29,
+        "securityLevel": "WEAK"
+      }
+    }
+  ]
+}
