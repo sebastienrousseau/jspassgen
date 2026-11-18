@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.22] - Unreleased
+
+### Fixed
+
+- **Web Demo Deployment**: The Pages workflow now builds the web demo from `main` (`npm run web:build`) and deploys `dist/web`, instead of uploading the committed `gh-pages` branch unchanged. The site had kept serving an old bundle, so the 0.0.21 web word-list fix (GHSA-8q9w-f94p-vxg8) did not reach it.
+
 ## [0.0.21] - 2026-11-18
 
 ### Added
