@@ -916,32 +916,27 @@ describe("Crypto Adapters", () => {
     });
 
     describe("createNodeAdapters", () => {
-      // Note: createNodeAdapters uses require() internally which is not available in ESM context.
-      // These tests verify that calling the function throws the expected error in ESM context,
-      // but the function is designed for CommonJS usage.
+      // createNodeAdapters once called require() inside this ES module and
+      // threw ReferenceError; these tests pin the fixed behaviour.
 
-      it("should throw ReferenceError when called in ESM context (uses require internally)", () => {
-        // The function uses CommonJS require() which is not available in ESM
-        expect(() => createNodeAdapters()).to.throw(
-          ReferenceError,
-          /require is not defined/,
-        );
+      it("should build the adapters in ESM context", () => {
+        const adapters = createNodeAdapters();
+        expect(adapters.randomGenerator).to.be.instanceOf(NodeCryptoRandom);
+        expect(adapters.clock).to.be.instanceOf(NodeSystemClock);
       });
 
-      it("should throw even with custom options in ESM context", () => {
-        expect(() =>
-          createNodeAdapters({
-            logger: { level: LogLevel.DEBUG, prefix: "Test" },
-          }),
-        ).to.throw(ReferenceError, /require is not defined/);
+      it("should pass custom logger options through", () => {
+        const adapters = createNodeAdapters({
+          logger: { level: LogLevel.DEBUG, prefix: "Test" },
+        });
+        expect(adapters.logger.level).to.equal(LogLevel.DEBUG);
       });
 
-      it("should throw even with storage options in ESM context", () => {
-        expect(() =>
-          createNodeAdapters({
-            storage: { basePath: "/tmp/test" },
-          }),
-        ).to.throw(ReferenceError, /require is not defined/);
+      it("should pass storage options through", () => {
+        const adapters = createNodeAdapters({
+          storage: { basePath: "/tmp/test" },
+        });
+        expect(adapters.storage.basePath).to.equal("/tmp/test");
       });
 
       // Test that we can manually create adapters using ESM imports (workaround)

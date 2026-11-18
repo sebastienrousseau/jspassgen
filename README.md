@@ -64,8 +64,8 @@ npm install @sebastienrousseau/jspassgen
 The package is ESM only (`"type": "module"`) and ships its own TypeScript
 declarations.
 
-Install the `jspassgen` and `password-generator` commands globally, or run
-them once without installing:
+Install the `jspassgen` command globally, or run it once without
+installing:
 
 ```bash
 npm install -g @sebastienrousseau/jspassgen
@@ -227,13 +227,15 @@ The exports map in `package.json` defines four entry points:
   `createService`, the generators, entropy functions, character sets and
   the port interfaces (`RandomGeneratorPort`, `DictionaryPort`,
   `MemoryDictionary` and the rest).
-- `@sebastienrousseau/jspassgen/adapters/node`: `NodeCryptoRandom`, a
-  console logger, file storage and a system clock for the core's ports.
+- `@sebastienrousseau/jspassgen/adapters/node`: `NodeCryptoRandom`,
+  `EFFDicewareDictionary` (the 7,776-word EFF list), a console logger,
+  file storage and a system clock for the core's ports, and
+  `createNodeAdapters()`, which builds them all.
 - `@sebastienrousseau/jspassgen/workers`: a Web Worker pool for bulk
   generation in the browser (`createWorkerPool`, `generatePasswordsBulk`).
 
-The package also installs two commands, `jspassgen` and
-`password-generator`, which share one entry point. `packages/core` imports
+The package installs the `jspassgen` command; `password-generator` is an
+older alias for the same entry point, kept so existing scripts still run. `packages/core` imports
 nothing from Node.js or the browser; `npm run verify:core` and CI enforce
 it. The web UI lives in [`src/ui/web/`](src/ui/web/) and is deployed from
 `main` to [doc.jspassgen.com](https://doc.jspassgen.com/).
@@ -256,20 +258,14 @@ it. The web UI lives in [`src/ui/web/`](src/ui/web/) and is deployed from
 
 The core takes its randomness and word list as ports. Without a
 `dictionary`, `memorable` draws from a 48-word placeholder list and
-`diceware` throws, so pass the 7,776-word EFF list:
+`diceware` throws. `createNodeAdapters()` supplies the 7,776-word EFF
+list with Node.js `crypto`:
 
 ```javascript
-import { readFile } from 'node:fs/promises';
-import { createService, MemoryDictionary } from '@sebastienrousseau/jspassgen/core';
-import { NodeCryptoRandom } from '@sebastienrousseau/jspassgen/adapters/node';
+import { createService } from '@sebastienrousseau/jspassgen/core';
+import { createNodeAdapters } from '@sebastienrousseau/jspassgen/adapters/node';
 
-// The EFF list, for example conformance/wordlists/eff-diceware.json.
-const { words } = JSON.parse(await readFile('eff-diceware.json', 'utf8'));
-
-const service = createService(
-  {},
-  { randomGenerator: new NodeCryptoRandom(), dictionary: new MemoryDictionary(words) },
-);
+const service = createService({}, createNodeAdapters());
 
 const result = await service.generate({ type: 'diceware', iteration: 6, includeEntropy: true });
 console.log(result.password, result.entropy);
