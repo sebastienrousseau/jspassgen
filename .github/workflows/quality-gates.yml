@@ -35,6 +35,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Check formatting
+        run: npm run format:check
+
   # ============================================
   # Unit Tests with Coverage
   # ============================================
@@ -63,9 +66,9 @@ jobs:
         run: |
           # Extract coverage percentages from coverage summary
           COVERAGE=$(cat coverage/coverage-summary.json)
-          LINES=$(echo $COVERAGE | jq '.total.lines.pct')
-          BRANCHES=$(echo $COVERAGE | jq '.total.branches.pct')
-          FUNCTIONS=$(echo $COVERAGE | jq '.total.functions.pct')
+          LINES=$(echo "$COVERAGE" | jq '.total.lines.pct')
+          BRANCHES=$(echo "$COVERAGE" | jq '.total.branches.pct')
+          FUNCTIONS=$(echo "$COVERAGE" | jq '.total.functions.pct')
 
           echo "Lines: $LINES%"
           echo "Branches: $BRANCHES%"
@@ -124,7 +127,7 @@ jobs:
         run: |
           # Core package must maintain high coverage (95%+)
           COVERAGE=$(cat coverage/coverage-summary.json)
-          STATEMENTS=$(echo $COVERAGE | jq '.total.statements.pct')
+          STATEMENTS=$(echo "$COVERAGE" | jq '.total.statements.pct')
 
           if (( $(echo "$STATEMENTS < 95" | bc -l) )); then
             echo "Core package coverage dropped below 95%: $STATEMENTS%"
