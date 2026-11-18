@@ -18,6 +18,7 @@ import { createService } from '../../../../packages/core/src/index.js';
 import { BrowserCryptoRandom } from '../adapters/BrowserCryptoRandom.js';
 import { BrowserStorage } from '../adapters/BrowserStorage.js';
 import { BrowserClock } from '../adapters/BrowserClock.js';
+import { createEffDicewareDictionary } from '../../../adapters/web/eff-diceware-dictionary.js';
 import { StateToCoreMapper } from '../state/StateToCoreMapper.js';
 import { PasswordViewModel } from '../view-models/PasswordViewModel.js';
 import { ValidationViewModel } from '../view-models/ValidationViewModel.js';
@@ -34,6 +35,7 @@ export class WebUIController {
    * @param {Object} [options.randomGenerator] - Custom RandomGeneratorPort.
    * @param {Object} [options.storage] - Custom StoragePort.
    * @param {Object} [options.clock] - Custom ClockPort.
+   * @param {Object} [options.dictionary] - Custom DictionaryPort (defaults to the EFF list).
    */
   constructor(options = {}) {
     // Wire browser adapters to core service
@@ -43,6 +45,7 @@ export class WebUIController {
         randomGenerator: options.randomGenerator ?? new BrowserCryptoRandom(),
         storage: options.storage ?? new BrowserStorage(),
         clock: options.clock ?? new BrowserClock(),
+        dictionary: options.dictionary ?? createEffDicewareDictionary(),
       }
     );
 

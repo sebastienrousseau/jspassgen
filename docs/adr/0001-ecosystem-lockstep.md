@@ -4,7 +4,7 @@
 
 ## Status
 
-Proposed (0.0.21). Modelled on crypto-service ADR 0005
+Accepted (0.0.21). Modelled on crypto-service ADR 0005
 (<https://github.com/sebastienrousseau/crypto-service/blob/main/docs/adr/0005-suite-lockstep-with-sdks-and-site.md>).
 
 ## Context

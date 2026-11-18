@@ -13,6 +13,7 @@
 // Import dependencies (will need bundling for production use)
 import { createService } from "../../packages/core/src/index.js";
 import { randomInt, bytesToBase64 } from "../adapters/web/webcrypto-random.js";
+import { createEffDicewareDictionary } from "../adapters/web/eff-diceware-dictionary.js";
 
 /**
  * Web Crypto Random Generator implementation for Web Worker context.
@@ -46,7 +47,10 @@ class WebWorkerCryptoRandom {
 
 // Initialize the password service
 const randomGenerator = new WebWorkerCryptoRandom();
-const passwordService = createService({}, { randomGenerator });
+const passwordService = createService(
+  {},
+  { randomGenerator, dictionary: createEffDicewareDictionary() },
+);
 
 /**
  * Message handler for the worker.
