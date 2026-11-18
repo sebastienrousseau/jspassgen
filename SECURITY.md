@@ -2,13 +2,14 @@
 
 ## Supported Versions
 
-We actively support the following versions with security updates:
+While pre-`1.0`, the latest released `0.0.x` receives security fixes;
+older `0.0.x` versions do not. The unscoped `jspassgen` package stopped at
+0.0.19 and receives no fixes: use `@sebastienrousseau/jspassgen`.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.1.x   | :white_check_mark: |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| Version  | Receives security fixes? |
+| -------- | ------------------------ |
+| 0.0.21   | Yes (latest)             |
+| < 0.0.21 | No                       |
 
 ## Reporting a Vulnerability
 
