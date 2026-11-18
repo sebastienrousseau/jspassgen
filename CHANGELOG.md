@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **npm Release Job**: The release workflow publishes to npmjs with `npm publish --provenance` inside an `npm` environment that a maintainer approves, the setup crypto-service releases with, instead of `npm stage publish`, which failed with E401 for 0.0.21 although a stage-only trusted publisher was configured. A manual run (`workflow_dispatch` with a `tag`) publishes an existing release tag to npmjs only.
 - **Web Demo Deployment**: The Pages workflow now builds the web demo from `main` (`npm run web:build`) and deploys `dist/web`, instead of uploading the committed `gh-pages` branch unchanged. The site had kept serving an old bundle, so the 0.0.21 web word-list fix (GHSA-8q9w-f94p-vxg8) did not reach it.
+- **npm Release Check**: The release workflow's last step now polls npmjs for up to 10 minutes before failing. The 0.0.21 publish succeeded with provenance, but the check ran 0.2 seconds later, while npm was still processing the version, and failed the run.
 
 ## [0.0.21] - 2026-11-18
 

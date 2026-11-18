@@ -109,7 +109,19 @@ jobs:
         if: steps.registry.outputs.published == 'false'
         env:
           SPEC: ${{ steps.registry.outputs.spec }}
-        run: npm view "$SPEC" version dist.integrity --registry=https://registry.npmjs.org
+        # npm answers "being processed" after a publish, and the version
+        # can take a few minutes to resolve, so poll before failing.
+        run: |
+          for attempt in $(seq 1 20); do
+            if npm view "$SPEC" version dist.integrity --prefer-online \
+              --registry=https://registry.npmjs.org; then
+              exit 0
+            fi
+            echo "Attempt ${attempt}: ${SPEC} not visible yet; retrying in 30s."
+            sleep 30
+          done
+          echo "${SPEC} is still not visible on npmjs after 10 minutes." >&2
+          exit 1
 
   publish-github-packages:
     needs: build
