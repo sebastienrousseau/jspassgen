@@ -33,6 +33,50 @@ import {
 } from './domain/entropy-normalizer.js';
 import { PASSWORD_ERRORS } from './errors.js';
 
+/** Password types whose entropy depends on the size of the word list. */
+const WORD_LIST_TYPES = new Set(['memorable', 'diceware']);
+
+/**
+ * Adds the injected dictionary's real size to a word-based configuration,
+ * so entropy is not reported against a list the words did not come from.
+ * A dictionarySize the caller passes is kept.
+ *
+ * @param {Object} config - Generation configuration.
+ * @param {Object} dictionary - DictionaryPort implementation.
+ * @returns {Promise<Object>} The configuration to measure entropy with.
+ */
+const withDictionarySize = async (config, dictionary) => {
+  if (!WORD_LIST_TYPES.has(config.type) || config.dictionarySize !== undefined) {
+    return config;
+  }
+  return { ...config, dictionarySize: await dictionary.getWordCount() };
+};
+
+/**
+ * Measures a generated password's entropy, falling back to the legacy
+ * calculation if the normalizer cannot handle the configuration.
+ *
+ * @param {string|Object} password - The generated password.
+ * @param {Object} config - Configuration including type.
+ * @param {Object} logger - LoggerPort implementation.
+ * @returns {{entropy: number, securityLevel: string}} Entropy in bits and level.
+ */
+const measureEntropy = (password, config, logger) => {
+  try {
+    const entropy = normalizeEntropy(password, config.type, config);
+    return { entropy, securityLevel: getSecurityLevelFromNormalizer(entropy) };
+  } catch (error) {
+    logger.warn(`Failed to calculate normalized entropy: ${error.message}`);
+  }
+  try {
+    const entropy = calculateTotalEntropy(config);
+    return { entropy, securityLevel: getSecurityLevel(entropy) };
+  } catch (fallbackError) {
+    logger.warn(`Failed to calculate fallback entropy: ${fallbackError.message}`);
+  }
+  return { entropy: 0, securityLevel: 'WEAK' };
+};
+
 /**
  * Creates a password generation service with injected ports.
  *
@@ -117,25 +161,12 @@ export function createService(config = {}, ports) {
         return password;
       }
 
-      // Calculate normalized entropy
-      let entropy = 0;
-      let securityLevel = 'WEAK';
-
-      try {
-        entropy = normalizeEntropy(password, type, generatedConfig);
-        securityLevel = getSecurityLevelFromNormalizer(entropy);
-      } catch (error) {
-        resolvedPorts.logger.warn(`Failed to calculate normalized entropy: ${error.message}`);
-        // Fallback to old entropy calculation
-        try {
-          entropy = calculateTotalEntropy(generatedConfig);
-          securityLevel = getSecurityLevel(entropy);
-        } catch (fallbackError) {
-          resolvedPorts.logger.warn(
-            `Failed to calculate fallback entropy: ${fallbackError.message}`
-          );
-        }
-      }
+      const entropyConfig = await withDictionarySize(generatedConfig, resolvedPorts.dictionary);
+      const { entropy, securityLevel } = measureEntropy(
+        password,
+        entropyConfig,
+        resolvedPorts.logger
+      );
 
       return {
         password,

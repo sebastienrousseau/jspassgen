@@ -80,6 +80,9 @@ describe('Web UI Adapter Parity Tests', () => {
 
     const webController = new WebUIController({
       randomGenerator: mockRandom2,
+      // Same word list as the core service: parity is about the adapter
+      // layer, and the web default is now the EFF list.
+      dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
     });
 
     return { webController, service };

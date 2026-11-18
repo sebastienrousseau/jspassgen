@@ -64,6 +64,9 @@ describe('Cross-Adapter Parity Tests', () => {
       const mockRandom = MockRandomGenerator.withSeed(this.seed);
       return new WebUIController({
         randomGenerator: mockRandom,
+        // Same word list as the other adapters: parity is about the adapter
+        // layer, and the web default is now the EFF list.
+        dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
       });
     }
 
@@ -117,6 +120,7 @@ describe('Cross-Adapter Parity Tests', () => {
 
     const webController = new WebUIController({
       randomGenerator: createMock(),
+      dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
     });
 
     return { core: coreService, cli: cliController, web: webController };

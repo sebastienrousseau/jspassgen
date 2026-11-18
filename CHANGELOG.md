@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - `package-lock.json` moves serialize-javascript 7.1.2 to 7.1.4 (Dependabot alert: low).
+- **Web Word List**: The web UI (`WebUIController`) and the Web Worker built the core service without a dictionary, so `memorable` passwords were drawn from the core's 48-word placeholder list (about 5.6 bits per word) while their strength was reported for the 7776-word EFF list (about 12.9 bits per word), and `diceware` failed. Both now load the EFF list, and the core reports word-based entropy from the size of the dictionary it was given.
 - npm overrides force minimatch ^11.0.1 and glob ^14.0.2 across the dependency tree, since their dependants still request the vulnerable majors (Dependabot alert #107).
 
 ### Fixed
