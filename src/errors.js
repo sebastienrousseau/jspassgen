@@ -25,7 +25,8 @@ export const STRING_ERRORS = {
  */
 export const CRYPTO_ERRORS = {
   /** Template for positive integer validation errors. Use with parameter name. */
-  MUST_BE_POSITIVE_INTEGER: (paramName) => `The ${paramName} argument must be a positive integer`,
+  MUST_BE_POSITIVE_INTEGER: (paramName) =>
+    `The ${paramName} argument must be a positive integer`,
 };
 
 /**
@@ -36,5 +37,6 @@ export const PASSWORD_ERRORS = {
   TYPE_REQUIRED: "Password type is required",
 
   /** Template for unknown password type errors. Use with type value. */
-  UNKNOWN_TYPE: (type) => `Unknown password type: "${type}". Valid types: ${getValidTypesString()}`,
+  UNKNOWN_TYPE: (type) =>
+    `Unknown password type: "${type}". Valid types: ${getValidTypesString()}`,
 };

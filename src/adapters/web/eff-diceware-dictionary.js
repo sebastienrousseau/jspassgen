@@ -20,4 +20,5 @@ import effDiceware from "../../dictionaries/eff-diceware.json" with { type: "jso
  *
  * @returns {MemoryDictionary} The dictionary port.
  */
-export const createEffDicewareDictionary = () => new MemoryDictionary(effDiceware.words);
+export const createEffDicewareDictionary = () =>
+  new MemoryDictionary(effDiceware.words);

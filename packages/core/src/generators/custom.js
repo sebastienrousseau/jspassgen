@@ -8,9 +8,13 @@
  * @module generators/custom
  */
 
-import { createCustomCharset, validateCharset } from '../domain/charset.js';
-import { validateTemplate, calculateTemplateEntropy, TOKEN_TYPES } from '../domain/template.js';
-import { validatePositiveInteger } from '../domain/base64-generation.js';
+import { createCustomCharset, validateCharset } from "../domain/charset.js";
+import {
+  validateTemplate,
+  calculateTemplateEntropy,
+  TOKEN_TYPES,
+} from "../domain/template.js";
+import { validatePositiveInteger } from "../domain/base64-generation.js";
 
 /**
  * Generates a password using a custom character set.
@@ -27,8 +31,8 @@ import { validatePositiveInteger } from '../domain/base64-generation.js';
 export const generateCustomPassword = async (config, randomGenerator) => {
   const { allowedChars, forbiddenChars, length, iteration, separator } = config;
 
-  validatePositiveInteger(length, 'length');
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(length, "length");
+  validatePositiveInteger(iteration, "iteration");
 
   // Create custom character set
   const customCharset = createCustomCharset(allowedChars, forbiddenChars);
@@ -36,12 +40,16 @@ export const generateCustomPassword = async (config, randomGenerator) => {
   // Validate the resulting character set
   const validation = validateCharset(customCharset.charset);
   if (!validation.isValid) {
-    throw new Error(`Invalid character set: ${validation.errors.join('; ')}`);
+    throw new Error(`Invalid character set: ${validation.errors.join("; ")}`);
   }
 
   const chunks = [];
   for (let i = 0; i < iteration; i++) {
-    const chunk = await generateCustomChunk(length, customCharset.charset, randomGenerator);
+    const chunk = await generateCustomChunk(
+      length,
+      customCharset.charset,
+      randomGenerator,
+    );
     chunks.push(chunk);
   }
 
@@ -61,19 +69,24 @@ export const generateCustomPassword = async (config, randomGenerator) => {
 export const generateTemplatePassword = async (config, randomGenerator) => {
   const { template, iteration, separator } = config;
 
-  validatePositiveInteger(iteration, 'iteration');
+  validatePositiveInteger(iteration, "iteration");
 
   // Validate and parse template
   const templateValidation = validateTemplate(template);
   if (!templateValidation.isValid) {
-    throw new Error(`Invalid template: ${templateValidation.errors.join('; ')}`);
+    throw new Error(
+      `Invalid template: ${templateValidation.errors.join("; ")}`,
+    );
   }
 
   const instructions = templateValidation.metadata.instructions;
   const results = [];
 
   for (let i = 0; i < iteration; i++) {
-    const passwordPart = await generateFromTemplate(instructions, randomGenerator);
+    const passwordPart = await generateFromTemplate(
+      instructions,
+      randomGenerator,
+    );
     results.push(passwordPart);
   }
 
@@ -89,11 +102,11 @@ export const generateTemplatePassword = async (config, randomGenerator) => {
  * @returns {Promise<string>} A random string of the specified length.
  */
 const generateCustomChunk = async (length, charset, randomGenerator) => {
-  if (typeof randomGenerator.generateRandomString === 'function') {
+  if (typeof randomGenerator.generateRandomString === "function") {
     return randomGenerator.generateRandomString(length, charset);
   }
 
-  let result = '';
+  let result = "";
   for (let i = 0; i < length; i++) {
     const index = await randomGenerator.generateRandomInt(charset.length);
     result += charset[index];
@@ -109,7 +122,7 @@ const generateCustomChunk = async (length, charset, randomGenerator) => {
  * @returns {Promise<string>} Generated password segment.
  */
 const generateFromTemplate = async (instructions, randomGenerator) => {
-  let result = '';
+  let result = "";
 
   for (const instruction of instructions) {
     switch (instruction.type) {
@@ -119,7 +132,9 @@ const generateFromTemplate = async (instructions, randomGenerator) => {
 
       case TOKEN_TYPES.CHARACTER_SET:
         for (let i = 0; i < instruction.quantity; i++) {
-          const index = await randomGenerator.generateRandomInt(instruction.charset.length);
+          const index = await randomGenerator.generateRandomInt(
+            instruction.charset.length,
+          );
           result += instruction.charset[index];
         }
         break;
@@ -172,7 +187,9 @@ export const calculateTemplatePasswordEntropy = (config) => {
       return 0;
     }
 
-    const entropyPerIteration = calculateTemplateEntropy(templateValidation.metadata.instructions);
+    const entropyPerIteration = calculateTemplateEntropy(
+      templateValidation.metadata.instructions,
+    );
     return entropyPerIteration * iteration;
   } catch (error) {
     // Return 0 if template cannot be parsed

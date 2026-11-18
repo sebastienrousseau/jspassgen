@@ -37,7 +37,11 @@
 .header__logo {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--brand-primary),
+    var(--brand-secondary)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -89,8 +93,9 @@
   border-radius: var(--radius-md);
   color: var(--input-text);
   font-size: var(--font-size-base);
-  transition: border-color var(--duration-fast) var(--ease-default),
-              box-shadow var(--duration-fast) var(--ease-default);
+  transition:
+    border-color var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default);
 }
 
 .form-input::placeholder {
@@ -130,8 +135,9 @@
   background-repeat: no-repeat;
   background-position: right var(--space-3) center;
   padding-right: var(--space-8);
-  transition: border-color var(--duration-fast) var(--ease-default),
-              box-shadow var(--duration-fast) var(--ease-default);
+  transition:
+    border-color var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default);
 }
 
 .form-select:hover {
@@ -506,7 +512,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ============================================
@@ -870,7 +878,7 @@
 }
 
 .advanced-options__toggle::before {
-  content: '+';
+  content: "+";
   display: flex;
   align-items: center;
   justify-content: center;
@@ -885,7 +893,7 @@
 }
 
 .advanced-options[open] .advanced-options__toggle::before {
-  content: '−';
+  content: "−";
 }
 
 .advanced-options__toggle:hover {
@@ -1035,9 +1043,15 @@ kbd {
 }
 
 @keyframes copySuccess {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .btn--copied {
@@ -1062,9 +1076,15 @@ kbd {
 
 /* Strength dots animation on update */
 @keyframes dotPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .strength__dot--filled {
@@ -1073,8 +1093,14 @@ kbd {
 
 /* Password display success flash */
 @keyframes passwordReveal {
-  0% { opacity: 0; transform: translateY(-4px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .password-display__value .select-all {
@@ -1083,8 +1109,13 @@ kbd {
 
 /* Generate button loading pulse */
 @keyframes loadingPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .btn:disabled {
@@ -1093,8 +1124,14 @@ kbd {
 
 /* Toast slide in */
 @keyframes toastSlideIn {
-  0% { transform: translateX(-50%) translateY(20px); opacity: 0; }
-  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  0% {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
 }
 
 .toast--visible {
@@ -1108,7 +1145,7 @@ kbd {
 }
 
 .segmented-control__btn::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -1139,8 +1176,12 @@ kbd {
 
 /* Theme toggle spin on click */
 @keyframes themeSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .theme-toggle__btn:active .theme-toggle__icon {
@@ -1252,7 +1293,11 @@ kbd {
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(157, 78, 221, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 157, 0.15),
+    rgba(157, 78, 221, 0.15)
+  );
   border: 1px solid var(--brand-primary);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-4);

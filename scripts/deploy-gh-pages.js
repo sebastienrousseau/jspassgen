@@ -56,7 +56,10 @@ try {
     // Create orphan gh-pages branch
     console.log("  Creating new gh-pages branch...");
     run(`git worktree add --detach ${tmpDir}`);
-    execSync("git checkout --orphan gh-pages", { cwd: tmpDir, stdio: "inherit" });
+    execSync("git checkout --orphan gh-pages", {
+      cwd: tmpDir,
+      stdio: "inherit",
+    });
     execSync("git rm -rf .", { cwd: tmpDir, stdio: "pipe" });
   }
 
@@ -78,7 +81,10 @@ try {
 
   try {
     execSync(`git commit -m "${commitMsg}"`, { cwd: tmpDir, stdio: "inherit" });
-    execSync("git push origin gh-pages --force", { cwd: tmpDir, stdio: "inherit" });
+    execSync("git push origin gh-pages --force", {
+      cwd: tmpDir,
+      stdio: "inherit",
+    });
     console.log("\n✅ Deployed successfully!");
     console.log("   URL: https://<username>.github.io/jspassgen/");
   } catch (e) {
@@ -88,7 +94,6 @@ try {
       throw e;
     }
   }
-
 } finally {
   // Cleanup worktree
   console.log("\nCleaning up...");

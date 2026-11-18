@@ -6,7 +6,7 @@
  */
 export interface PasswordGeneratorOptions {
   /** The type of password to generate */
-  type: 'strong' | 'base64' | 'memorable';
+  type: "strong" | "base64" | "memorable";
   /** The length of each password chunk (optional, not used for memorable type) */
   length?: number;
   /** The number of password chunks or words */
@@ -39,4 +39,6 @@ export interface PasswordGeneratorOptions {
  * @throws {Error} When password type is not supported
  * @throws {RangeError} When length or iteration parameters are not positive integers
  */
-export declare function PasswordGenerator(data: PasswordGeneratorOptions): Promise<string>;
+export declare function PasswordGenerator(
+  data: PasswordGeneratorOptions,
+): Promise<string>;

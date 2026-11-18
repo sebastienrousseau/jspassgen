@@ -24,8 +24,8 @@ export class EntropyViewModel {
   constructor(entropyInfo) {
     this.totalBits = entropyInfo.totalBits ?? 0;
     this.perUnit = entropyInfo.perUnit ?? 0;
-    this.securityLevel = entropyInfo.securityLevel ?? 'unknown';
-    this.recommendation = entropyInfo.recommendation ?? '';
+    this.securityLevel = entropyInfo.securityLevel ?? "unknown";
+    this.recommendation = entropyInfo.recommendation ?? "";
 
     // UI-specific computed values
     this.displayBits = Math.round(this.totalBits);
@@ -56,21 +56,21 @@ export class EntropyViewModel {
    */
   _getStrengthLabel(bits) {
     if (bits >= 256) {
-      return 'Excellent';
+      return "Excellent";
     }
     if (bits >= 128) {
-      return 'Strong';
+      return "Strong";
     }
     if (bits >= 80) {
-      return 'Good';
+      return "Good";
     }
     if (bits >= 64) {
-      return 'Moderate';
+      return "Moderate";
     }
     if (bits >= 40) {
-      return 'Weak';
+      return "Weak";
     }
-    return 'Very Weak';
+    return "Very Weak";
   }
 
   /**
@@ -82,18 +82,18 @@ export class EntropyViewModel {
    */
   _getStrengthColor(bits) {
     if (bits >= 128) {
-      return 'green';
+      return "green";
     }
     if (bits >= 80) {
-      return 'blue';
+      return "blue";
     }
     if (bits >= 64) {
-      return 'yellow';
+      return "yellow";
     }
     if (bits >= 40) {
-      return 'orange';
+      return "orange";
     }
-    return 'red';
+    return "red";
   }
 
   /**

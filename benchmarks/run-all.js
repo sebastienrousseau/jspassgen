@@ -9,10 +9,10 @@
  * format compatible with hyperfine for CI integration.
  */
 
-import { spawn } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from "child_process";
+import { readFileSync, writeFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 // ============================================
 // Configuration
@@ -23,29 +23,29 @@ const __dirname = dirname(__filename);
 
 const BENCHMARKS = [
   {
-    name: 'crypto-vs-mathrand',
-    file: 'crypto-vs-mathrand.bench.js',
-    description: 'Crypto vs Math.random() security baseline comparison',
-    timeout: 120000 // 2 minutes
+    name: "crypto-vs-mathrand",
+    file: "crypto-vs-mathrand.bench.js",
+    description: "Crypto vs Math.random() security baseline comparison",
+    timeout: 120000, // 2 minutes
   },
   {
-    name: 'password-generation',
-    file: 'password-generation.bench.js',
-    description: 'Password generation performance across types and sizes',
-    timeout: 60000 // 1 minute
+    name: "password-generation",
+    file: "password-generation.bench.js",
+    description: "Password generation performance across types and sizes",
+    timeout: 60000, // 1 minute
   },
   {
-    name: 'bulk-generation',
-    file: 'bulk-generation.bench.js',
-    description: 'Bulk password generation throughput analysis',
-    timeout: 90000 // 1.5 minutes
+    name: "bulk-generation",
+    file: "bulk-generation.bench.js",
+    description: "Bulk password generation throughput analysis",
+    timeout: 90000, // 1.5 minutes
   },
   {
-    name: 'entropy-calculation',
-    file: 'entropy-calculation.bench.js',
-    description: 'Entropy calculation performance benchmarks',
-    timeout: 30000 // 30 seconds
-  }
+    name: "entropy-calculation",
+    file: "entropy-calculation.bench.js",
+    description: "Entropy calculation performance benchmarks",
+    timeout: 30000, // 30 seconds
+  },
 ];
 
 // ============================================
@@ -58,43 +58,49 @@ const BENCHMARKS = [
 function runBenchmark(benchmark) {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
-    console.log(`\n${'='.repeat(80)}`);
+    console.log(`\n${"=".repeat(80)}`);
     console.log(`🔧 Running: ${benchmark.name}`);
     console.log(`📝 ${benchmark.description}`);
-    console.log(`${'='.repeat(80)}`);
+    console.log(`${"=".repeat(80)}`);
 
-    const child = spawn('node', [benchmark.file], {
+    const child = spawn("node", [benchmark.file], {
       cwd: __dirname,
-      stdio: ['inherit', 'pipe', 'pipe']
+      stdio: ["inherit", "pipe", "pipe"],
     });
 
-    let stdout = '';
-    let stderr = '';
+    let stdout = "";
+    let stderr = "";
 
-    child.stdout.on('data', (data) => {
+    child.stdout.on("data", (data) => {
       const output = data.toString();
       stdout += output;
       process.stdout.write(output); // Real-time output
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.on("data", (data) => {
       const output = data.toString();
       stderr += output;
       process.stderr.write(output); // Real-time output
     });
 
     const timeoutId = setTimeout(() => {
-      child.kill('SIGTERM');
-      reject(new Error(`Benchmark ${benchmark.name} timed out after ${benchmark.timeout}ms`));
+      child.kill("SIGTERM");
+      reject(
+        new Error(
+          `Benchmark ${benchmark.name} timed out after ${benchmark.timeout}ms`,
+        ),
+      );
     }, benchmark.timeout);
 
-    child.on('close', (code) => {
+    child.on("close", (code) => {
       clearTimeout(timeoutId);
       const endTime = Date.now();
       const duration = endTime - startTime;
 
       if (code === 0) {
-        console.log(`\n✅ ${benchmark.name} completed in ${(duration / 1000).toFixed(2)}s`);
+        console.log(
+          `\n✅ ${benchmark.name} completed in ${(duration / 1000).toFixed(2)}s`,
+        );
         resolve({
           name: benchmark.name,
           description: benchmark.description,
@@ -102,15 +108,19 @@ function runBenchmark(benchmark) {
           duration,
           stdout,
           stderr,
-          exitCode: code
+          exitCode: code,
         });
       } else {
         console.error(`\n❌ ${benchmark.name} failed with exit code ${code}`);
-        reject(new Error(`Benchmark ${benchmark.name} failed with exit code ${code}`));
+        reject(
+          new Error(
+            `Benchmark ${benchmark.name} failed with exit code ${code}`,
+          ),
+        );
       }
     });
 
-    child.on('error', (error) => {
+    child.on("error", (error) => {
       clearTimeout(timeoutId);
       console.error(`\n💥 ${benchmark.name} error:`, error.message);
       reject(error);
@@ -148,7 +158,7 @@ function formatDuration(ms) {
  */
 function generateSummary(results) {
   const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
-  const successful = results.filter(r => r.success).length;
+  const successful = results.filter((r) => r.success).length;
   const failed = results.length - successful;
 
   return {
@@ -157,15 +167,15 @@ function generateSummary(results) {
       total: results.length,
       successful,
       failed,
-      totalDuration: formatDuration(totalDuration)
+      totalDuration: formatDuration(totalDuration),
     },
-    benchmarks: results.map(r => ({
+    benchmarks: results.map((r) => ({
       name: r.name,
       description: r.description,
       success: r.success,
       duration: formatDuration(r.duration),
-      exitCode: r.exitCode
-    }))
+      exitCode: r.exitCode,
+    })),
   };
 }
 
@@ -176,7 +186,7 @@ function generateSummary(results) {
 async function main() {
   const startTime = Date.now();
 
-  console.log('🚀 Password Generator Benchmark Suite');
+  console.log("🚀 Password Generator Benchmark Suite");
   console.log(`📅 Started: ${new Date().toISOString()}`);
   console.log(`📁 Directory: ${__dirname}`);
   console.log(`🧪 Benchmarks: ${BENCHMARKS.length}`);
@@ -196,15 +206,18 @@ async function main() {
         hyperfineData.push(...hyperfine.results);
       }
     } catch (error) {
-      console.error(`Failed to run benchmark ${benchmark.name}:`, error.message);
+      console.error(
+        `Failed to run benchmark ${benchmark.name}:`,
+        error.message,
+      );
       results.push({
         name: benchmark.name,
         description: benchmark.description,
         success: false,
         duration: 0,
-        stdout: '',
+        stdout: "",
         stderr: error.message,
-        exitCode: -1
+        exitCode: -1,
       });
     }
   }
@@ -216,21 +229,25 @@ async function main() {
   const endTime = Date.now();
   const totalDuration = endTime - startTime;
 
-  console.log('\n' + '='.repeat(80));
-  console.log('📊 BENCHMARK SUITE SUMMARY');
-  console.log('='.repeat(80));
+  console.log("\n" + "=".repeat(80));
+  console.log("📊 BENCHMARK SUITE SUMMARY");
+  console.log("=".repeat(80));
 
   const summary = generateSummary(results);
 
   console.log(`⏱️  Total execution time: ${formatDuration(totalDuration)}`);
-  console.log(`✅ Successful: ${summary.summary.successful}/${summary.summary.total}`);
+  console.log(
+    `✅ Successful: ${summary.summary.successful}/${summary.summary.total}`,
+  );
   console.log(`❌ Failed: ${summary.summary.failed}/${summary.summary.total}`);
 
   if (summary.summary.failed > 0) {
-    console.log('\n❌ Failed benchmarks:');
-    results.filter(r => !r.success).forEach(r => {
-      console.log(`   - ${r.name}: ${r.stderr || 'Unknown error'}`);
-    });
+    console.log("\n❌ Failed benchmarks:");
+    results
+      .filter((r) => !r.success)
+      .forEach((r) => {
+        console.log(`   - ${r.name}: ${r.stderr || "Unknown error"}`);
+      });
   }
 
   // ============================================
@@ -238,24 +255,31 @@ async function main() {
   // ============================================
 
   if (hyperfineData.length > 0) {
-    console.log('\n' + '='.repeat(80));
-    console.log('🔧 HYPERFINE-COMPATIBLE RESULTS');
-    console.log('='.repeat(80));
+    console.log("\n" + "=".repeat(80));
+    console.log("🔧 HYPERFINE-COMPATIBLE RESULTS");
+    console.log("=".repeat(80));
 
     const hyperfineOutput = {
-      results: hyperfineData
+      results: hyperfineData,
     };
 
     // Output to stdout for CI integration
     console.log(JSON.stringify(hyperfineOutput, null, 2));
 
     // Save to file for later analysis
-    const outputFile = join(__dirname, 'benchmark-results.json');
-    writeFileSync(outputFile, JSON.stringify({
-      summary,
-      hyperfineResults: hyperfineOutput,
-      rawResults: results
-    }, null, 2));
+    const outputFile = join(__dirname, "benchmark-results.json");
+    writeFileSync(
+      outputFile,
+      JSON.stringify(
+        {
+          summary,
+          hyperfineResults: hyperfineOutput,
+          rawResults: results,
+        },
+        null,
+        2,
+      ),
+    );
 
     console.log(`\n💾 Detailed results saved to: ${outputFile}`);
   }
@@ -264,22 +288,26 @@ async function main() {
   // CI Integration Instructions
   // ============================================
 
-  console.log('\n' + '='.repeat(80));
-  console.log('🔧 CI INTEGRATION USAGE');
-  console.log('='.repeat(80));
+  console.log("\n" + "=".repeat(80));
+  console.log("🔧 CI INTEGRATION USAGE");
+  console.log("=".repeat(80));
   console.log();
-  console.log('To integrate with hyperfine in CI:');
-  console.log('');
-  console.log('1. Run benchmarks:');
-  console.log('   npm run benchmark:all > benchmark-output.txt');
-  console.log('');
-  console.log('2. Extract JSON results:');
-  console.log('   cat benchmark-results.json | jq .hyperfineResults > hyperfine.json');
-  console.log('');
-  console.log('3. Compare with hyperfine:');
-  console.log('   hyperfine --import-json hyperfine.json --export-markdown results.md');
-  console.log('');
-  console.log('4. Performance regression detection:');
+  console.log("To integrate with hyperfine in CI:");
+  console.log("");
+  console.log("1. Run benchmarks:");
+  console.log("   npm run benchmark:all > benchmark-output.txt");
+  console.log("");
+  console.log("2. Extract JSON results:");
+  console.log(
+    "   cat benchmark-results.json | jq .hyperfineResults > hyperfine.json",
+  );
+  console.log("");
+  console.log("3. Compare with hyperfine:");
+  console.log(
+    "   hyperfine --import-json hyperfine.json --export-markdown results.md",
+  );
+  console.log("");
+  console.log("4. Performance regression detection:");
   console.log('   npm run benchmark:all | grep "ops/s" | sort -k3 -n');
 
   // Exit with proper code
@@ -288,20 +316,20 @@ async function main() {
 }
 
 // Handle errors gracefully
-process.on('unhandledRejection', (error) => {
-  console.error('💥 Unhandled rejection:', error);
+process.on("unhandledRejection", (error) => {
+  console.error("💥 Unhandled rejection:", error);
   process.exit(1);
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('💥 Uncaught exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("💥 Uncaught exception:", error);
   process.exit(1);
 });
 
 // Execute if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error('💥 Main execution failed:', error);
+    console.error("💥 Main execution failed:", error);
     process.exit(1);
   });
 }

@@ -54,13 +54,13 @@ export class ValidationViewModel {
     for (const error of validation.errors) {
       const lowerError = error.toLowerCase();
 
-      if (lowerError.includes('type')) {
+      if (lowerError.includes("type")) {
         fieldErrors.type = error;
-      } else if (lowerError.includes('length')) {
+      } else if (lowerError.includes("length")) {
         fieldErrors.length = error;
-      } else if (lowerError.includes('iteration')) {
+      } else if (lowerError.includes("iteration")) {
         fieldErrors.iteration = error;
-      } else if (lowerError.includes('separator')) {
+      } else if (lowerError.includes("separator")) {
         fieldErrors.separator = error;
       }
     }
@@ -107,7 +107,9 @@ export class ValidationViewModel {
    * @returns {boolean} True if field has error.
    */
   hasFieldError(fieldName) {
-    return fieldName in this.fieldErrors && this.fieldErrors[fieldName] !== null;
+    return (
+      fieldName in this.fieldErrors && this.fieldErrors[fieldName] !== null
+    );
   }
 
   /**

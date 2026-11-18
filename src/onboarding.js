@@ -15,7 +15,10 @@ import { CommandLearningPresenter } from "./presenters/CommandLearningPresenter.
 import { colors, gradient, icons } from "./ui/theme.js";
 import { matchesBinding, defaultBindings } from "./ui/keyboard.js";
 import { getFocusManager } from "./ui/focus-manager.js";
-import { getCommandPalette, isCommandPaletteKey } from "./ui/command-palette.js";
+import {
+  getCommandPalette,
+  isCommandPaletteKey,
+} from "./ui/command-palette.js";
 
 // Get version from package.json
 const require = createRequire(import.meta.url);
@@ -28,11 +31,11 @@ const { version } = require("../package.json");
 const BRAND = `
   ${gradient.primary("╭─────────────────────────────────────╮")}
   ${gradient.primary("│")}  ${colors.text("✦")} ${gradient.primary(
-  "p a s s w o r d"
-)}                  ${gradient.primary("│")}
+    "p a s s w o r d",
+  )}                  ${gradient.primary("│")}
   ${gradient.primary("│")}    ${gradient.primary("g e n e r a t o r")}  ${colors.dim(
-  `v${version}`
-)}        ${gradient.primary("│")}
+    `v${version}`,
+  )}        ${gradient.primary("│")}
   ${gradient.primary("╰─────────────────────────────────────╯")}
 `;
 
@@ -44,8 +47,12 @@ const BRAND = `
 const createReadlineInterface = () => {
   if (!process.stdin.isTTY) {
     console.log("");
-    console.log(`  ${colors.error(icons.error)} ${colors.dim("requires a terminal")}`);
-    console.log(`  ${colors.dim("try:")} ${colors.command("password-generator -p quick")}`);
+    console.log(
+      `  ${colors.error(icons.error)} ${colors.dim("requires a terminal")}`,
+    );
+    console.log(
+      `  ${colors.dim("try:")} ${colors.command("password-generator -p quick")}`,
+    );
     console.log("");
     process.exit(1);
   }
@@ -65,7 +72,9 @@ const renderMenu = (options, selectedIndex) => {
     const isSelected = i === selectedIndex;
     const pointer = isSelected ? colors.primary(icons.pointer) : " ";
     const num = colors.dim(`${i + 1}`);
-    const text = isSelected ? colors.text(options[i].label) : colors.muted(options[i].label);
+    const text = isSelected
+      ? colors.text(options[i].label)
+      : colors.muted(options[i].label);
     const desc = options[i].desc ? colors.dim(` · ${options[i].desc}`) : "";
     lines.push(`  ${pointer} ${num} ${text}${desc}`);
   }
@@ -99,7 +108,9 @@ const promptWithNavigation = (title, options, menuId = null) => {
       console.log("");
       console.log(renderMenu(options, selectedIndex));
       console.log("");
-      console.log(`  ${colors.dim("↑↓/jk navigate · enter select · ctrl+k commands · esc quit")}`);
+      console.log(
+        `  ${colors.dim("↑↓/jk navigate · enter select · ctrl+k commands · esc quit")}`,
+      );
     };
 
     // Enable raw mode for arrow keys
@@ -154,11 +165,13 @@ const promptWithNavigation = (title, options, menuId = null) => {
 
       // Use keyboard bindings for navigation
       if (matchesBinding(key, "up", defaultBindings)) {
-        selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : options.length - 1;
+        selectedIndex =
+          selectedIndex > 0 ? selectedIndex - 1 : options.length - 1;
         focusManager.updateIndex(selectedIndex);
         render();
       } else if (matchesBinding(key, "down", defaultBindings)) {
-        selectedIndex = selectedIndex < options.length - 1 ? selectedIndex + 1 : 0;
+        selectedIndex =
+          selectedIndex < options.length - 1 ? selectedIndex + 1 : 0;
         focusManager.updateIndex(selectedIndex);
         render();
       } else if (matchesBinding(key, "select", defaultBindings)) {
@@ -204,14 +217,18 @@ export const runOnboarding = async () => {
       { label: "secure", desc: "maximum protection", value: "secure" },
       { label: "memorable", desc: "easy to remember", value: "memorable" },
       { label: "quantum", desc: "256-bit entropy", value: "quantum" },
-      { label: "diceware", desc: "EFF word list passphrase", value: "diceware" },
+      {
+        label: "diceware",
+        desc: "EFF word list passphrase",
+        value: "diceware",
+      },
       { label: "pronounceable", desc: "easy to say", value: "pronounceable" },
     ];
 
     const preset = await promptWithNavigation(
       "choose a preset",
       presetOptions,
-      "onboarding:preset"
+      "onboarding:preset",
     );
     const config = getPresetConfig(preset.value);
 
@@ -224,7 +241,11 @@ export const runOnboarding = async () => {
         { label: "32", desc: "extra long", value: 32 },
       ];
 
-      const lengthChoice = await promptWithNavigation("length", lengthOptions, "onboarding:length");
+      const lengthChoice = await promptWithNavigation(
+        "length",
+        lengthOptions,
+        "onboarding:length",
+      );
       config.length = lengthChoice.value;
     }
 
@@ -239,7 +260,7 @@ export const runOnboarding = async () => {
     const separatorChoice = await promptWithNavigation(
       "separator",
       separatorOptions,
-      "onboarding:separator"
+      "onboarding:separator",
     );
     config.separator = separatorChoice.value;
 
@@ -252,7 +273,7 @@ export const runOnboarding = async () => {
     const clipboardChoice = await promptWithNavigation(
       "clipboard",
       clipboardOptions,
-      "onboarding:clipboard"
+      "onboarding:clipboard",
     );
     const clipboard = clipboardChoice.value;
 
@@ -261,23 +282,31 @@ export const runOnboarding = async () => {
     console.log(BRAND);
     console.log(`  ${colors.success(icons.success)} ${colors.dim("ready")}`);
     console.log("");
-    console.log(`  ${colors.muted(icons.pointer)} preset      ${colors.command(preset.value)}`);
     console.log(
-      `  ${colors.muted(icons.pointer)} length      ${colors.text(String(config.length))}`
+      `  ${colors.muted(icons.pointer)} preset      ${colors.command(preset.value)}`,
+    );
+    console.log(
+      `  ${colors.muted(icons.pointer)} length      ${colors.text(String(config.length))}`,
     );
     console.log(
       `  ${colors.muted(icons.pointer)} separator   ${
-        config.separator ? colors.text(`"${config.separator}"`) : colors.dim("none")
-      }`
+        config.separator
+          ? colors.text(`"${config.separator}"`)
+          : colors.dim("none")
+      }`,
     );
     console.log(
       `  ${colors.muted(icons.pointer)} clipboard   ${
         clipboard ? colors.success("yes") : colors.dim("no")
-      }`
+      }`,
     );
     console.log("");
 
-    CommandLearningPresenter.displayCommandLearningPanel(config, clipboard, preset.value);
+    CommandLearningPresenter.displayCommandLearningPanel(
+      config,
+      clipboard,
+      preset.value,
+    );
 
     console.log(`  ${colors.dim("generating...")}`);
     console.log("");
@@ -291,7 +320,7 @@ export const runOnboarding = async () => {
 
 export const isFirstRun = (args) => {
   const nonInteractiveArgs = args.filter(
-    (arg) => arg !== "--interactive" && arg !== "password-generator"
+    (arg) => arg !== "--interactive" && arg !== "password-generator",
   );
   return nonInteractiveArgs.length === 0;
 };

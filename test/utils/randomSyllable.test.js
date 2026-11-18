@@ -1,9 +1,9 @@
-import { randomSyllable } from '../../src/utils/randomSyllable.js';
-import { expect } from 'chai';
+import { randomSyllable } from "../../src/utils/randomSyllable.js";
+import { expect } from "chai";
 
 // Mock the randomConsonant and randomVowel functions for testing
-const mockRandomConsonant = () => 'c'; // Mock consonant to always return 'c'
-const mockRandomVowel = () => 'a'; // Mock vowel to always return 'a'
+const mockRandomConsonant = () => "c"; // Mock consonant to always return 'c'
+const mockRandomVowel = () => "a"; // Mock vowel to always return 'a'
 
 // Replace the randomConsonant and randomVowel functions with the mock versions
 let originalRandomConsonant, originalRandomVowel;
@@ -21,14 +21,16 @@ afterEach(() => {
 });
 
 // Test the randomSyllable() function
-describe('Running randomSyllable', () => {
-  it('should be a defined function', () => {
-    expect(randomSyllable).to.be.a('function');
+describe("Running randomSyllable", () => {
+  it("should be a defined function", () => {
+    expect(randomSyllable).to.be.a("function");
   });
 
-  it('should return a string containing a consonant, vowel, and consonant', () => {
+  it("should return a string containing a consonant, vowel, and consonant", () => {
     const syllable = randomSyllable();
-    expect(syllable).to.be.a('string');
-    expect(syllable).to.match(/^[bcdfhgjklmnpqrstvwxyz][aeiou][bcdfhgjklmnpqrstvwxyz]$/);
+    expect(syllable).to.be.a("string");
+    expect(syllable).to.match(
+      /^[bcdfhgjklmnpqrstvwxyz][aeiou][bcdfhgjklmnpqrstvwxyz]$/,
+    );
   });
 });

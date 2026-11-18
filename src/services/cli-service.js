@@ -130,11 +130,11 @@ export const displayPasswordOutput = (
     console.log("");
     password.passwords.forEach((pwd, idx) => {
       const isReal = idx === password.metadata.realPasswordIndex;
-      const marker = config.reveal ?
-        isReal ?
-          ` ${colors.success("[REAL]")}` :
-          ` ${colors.dim("[DECOY]")}` :
-        "";
+      const marker = config.reveal
+        ? isReal
+          ? ` ${colors.success("[REAL]")}`
+          : ` ${colors.dim("[DECOY]")}`
+        : "";
       console.log(
         `  ${colors.muted(String(idx + 1).padStart(2, " "))}. ${colors.text(pwd)}${marker}`,
       );

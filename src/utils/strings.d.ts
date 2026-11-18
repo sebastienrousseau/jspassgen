@@ -57,7 +57,7 @@ export declare function toCharArray(str: string): string[];
 export declare function toCurrency(
   n: number,
   curr: string,
-  languageFormat?: string
+  languageFormat?: string,
 ): string;
 
 /**

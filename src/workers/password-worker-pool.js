@@ -152,9 +152,9 @@ export class PasswordWorkerPool {
 
     if (data.success) {
       this.stats.tasksCompleted++;
-      this.stats.totalPasswordsGenerated += Array.isArray(data.result) ?
-        data.result.length :
-        1;
+      this.stats.totalPasswordsGenerated += Array.isArray(data.result)
+        ? data.result.length
+        : 1;
       task.resolve(data.result);
     } else {
       this.stats.errors++;

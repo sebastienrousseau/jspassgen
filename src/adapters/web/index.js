@@ -18,9 +18,19 @@ export {
   bytesToBase64,
 } from "./WebCryptoRandom.js";
 
-export { WebConsoleLogger, LogLevel, logger, webConsole } from "./WebConsoleLogger.js";
+export {
+  WebConsoleLogger,
+  LogLevel,
+  logger,
+  webConsole,
+} from "./WebConsoleLogger.js";
 
-export { WebLocalStorage, StorageKeys, storage, webStorage } from "./WebLocalStorage.js";
+export {
+  WebLocalStorage,
+  StorageKeys,
+  storage,
+  webStorage,
+} from "./WebLocalStorage.js";
 
 /**
  * Complete web adapter suite for drop-in Node.js replacement.

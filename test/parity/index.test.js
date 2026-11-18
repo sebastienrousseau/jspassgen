@@ -13,29 +13,29 @@
  * @module parity/index.test
  */
 
-import { expect } from 'chai';
-import { describe, it, beforeEach } from 'mocha';
-import { createService } from '../../packages/core/src/service.js';
+import { expect } from "chai";
+import { describe, it, beforeEach } from "mocha";
+import { createService } from "../../packages/core/src/service.js";
 import {
   MemoryDictionary,
   DEFAULT_WORD_LIST,
-} from '../../packages/core/src/ports/DictionaryPort.js';
-import { CLIController } from '../../src/cli/CLIController.js';
-import { WebUIController } from '../../src/ui/web/controllers/WebUIController.js';
-import { FormState } from '../../src/ui/web/state/FormState.js';
-import { StateToCoreMapper } from '../../src/ui/web/state/StateToCoreMapper.js';
+} from "../../packages/core/src/ports/DictionaryPort.js";
+import { CLIController } from "../../src/cli/CLIController.js";
+import { WebUIController } from "../../src/ui/web/controllers/WebUIController.js";
+import { FormState } from "../../src/ui/web/state/FormState.js";
+import { StateToCoreMapper } from "../../src/ui/web/state/StateToCoreMapper.js";
 import {
   MockRandomGenerator,
   PARITY_SEEDS,
-} from '../../packages/core/test/parity/MockRandomGenerator.js';
+} from "../../packages/core/test/parity/MockRandomGenerator.js";
 import {
   GENERATION_PARITY_CASES,
   VALIDATION_PARITY_CASES,
   ENTROPY_PARITY_CASES,
   generateComparisonCases,
-} from '../../packages/core/test/parity/fixtures.js';
+} from "../../packages/core/test/parity/fixtures.js";
 
-describe('Cross-Adapter Parity Tests', () => {
+describe("Cross-Adapter Parity Tests", () => {
   /**
    * Adapter factory for consistent adapter creation.
    */
@@ -51,7 +51,7 @@ describe('Cross-Adapter Parity Tests', () => {
         {
           randomGenerator: mockRandom,
           dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
-        }
+        },
       );
     }
 
@@ -87,10 +87,10 @@ describe('Cross-Adapter Parity Tests', () => {
    */
   function configToFormState(config) {
     return new FormState({
-      type: config.type || '',
-      length: config.length !== undefined ? String(config.length) : '',
-      iteration: config.iteration !== undefined ? String(config.iteration) : '',
-      separator: config.separator !== undefined ? config.separator : '-',
+      type: config.type || "",
+      length: config.length !== undefined ? String(config.length) : "",
+      iteration: config.iteration !== undefined ? String(config.iteration) : "",
+      separator: config.separator !== undefined ? config.separator : "-",
     });
   }
 
@@ -105,7 +105,7 @@ describe('Cross-Adapter Parity Tests', () => {
       {
         randomGenerator: createMock(),
         dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
-      }
+      },
     );
 
     const cliMock = createMock();
@@ -114,7 +114,7 @@ describe('Cross-Adapter Parity Tests', () => {
       {
         randomGenerator: cliMock,
         dictionary: new MemoryDictionary(DEFAULT_WORD_LIST),
-      }
+      },
     );
     const cliController = new CLIController(cliService);
 
@@ -129,40 +129,46 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // CORE vs CLI PARITY
   // =========================================================================
-  describe('Core vs CLI Parity', () => {
-    describe('generation parity', () => {
+  describe("Core vs CLI Parity", () => {
+    describe("generation parity", () => {
       GENERATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and CLI produce identical passwords`, async () => {
           const adapters = createDeterministicAdapters();
 
           const corePassword = await adapters.core.generate(testCase.config);
-          const cliPassword = await adapters.cli.getService().generate(testCase.config);
+          const cliPassword = await adapters.cli
+            .getService()
+            .generate(testCase.config);
 
           expect(corePassword).to.equal(cliPassword);
         });
       });
     });
 
-    describe('validation parity', () => {
+    describe("validation parity", () => {
       VALIDATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and CLI produce identical validation`, () => {
           const adapters = createDeterministicAdapters();
 
           const coreResult = adapters.core.validateConfig(testCase.config);
-          const cliResult = adapters.cli.getService().validateConfig(testCase.config);
+          const cliResult = adapters.cli
+            .getService()
+            .validateConfig(testCase.config);
 
           expect(coreResult).to.deep.equal(cliResult);
         });
       });
     });
 
-    describe('entropy parity', () => {
+    describe("entropy parity", () => {
       ENTROPY_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and CLI produce identical entropy`, () => {
           const adapters = createDeterministicAdapters();
 
           const coreEntropy = adapters.core.calculateEntropy(testCase.config);
-          const cliEntropy = adapters.cli.getService().calculateEntropy(testCase.config);
+          const cliEntropy = adapters.cli
+            .getService()
+            .calculateEntropy(testCase.config);
 
           expect(coreEntropy).to.deep.equal(cliEntropy);
         });
@@ -173,8 +179,8 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // CORE vs WEB PARITY
   // =========================================================================
-  describe('Core vs Web Parity', () => {
-    describe('generation parity', () => {
+  describe("Core vs Web Parity", () => {
+    describe("generation parity", () => {
       GENERATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and Web produce identical passwords`, async () => {
           const adapters = createDeterministicAdapters();
@@ -189,7 +195,7 @@ describe('Cross-Adapter Parity Tests', () => {
       });
     });
 
-    describe('validation parity', () => {
+    describe("validation parity", () => {
       VALIDATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and Web produce identical validation`, () => {
           const adapters = createDeterministicAdapters();
@@ -204,7 +210,7 @@ describe('Cross-Adapter Parity Tests', () => {
       });
     });
 
-    describe('entropy parity', () => {
+    describe("entropy parity", () => {
       ENTROPY_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] Core and Web produce identical entropy`, () => {
           const adapters = createDeterministicAdapters();
@@ -223,13 +229,15 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // CLI vs WEB PARITY
   // =========================================================================
-  describe('CLI vs Web Parity', () => {
-    describe('generation parity', () => {
+  describe("CLI vs Web Parity", () => {
+    describe("generation parity", () => {
       GENERATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] CLI and Web produce identical passwords`, async () => {
           const adapters = createDeterministicAdapters();
 
-          const cliPassword = await adapters.cli.getService().generate(testCase.config);
+          const cliPassword = await adapters.cli
+            .getService()
+            .generate(testCase.config);
 
           const formState = configToFormState(testCase.config);
           const webResult = await adapters.web.generate(formState);
@@ -239,12 +247,14 @@ describe('Cross-Adapter Parity Tests', () => {
       });
     });
 
-    describe('validation parity', () => {
+    describe("validation parity", () => {
       VALIDATION_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] CLI and Web produce identical validation`, () => {
           const adapters = createDeterministicAdapters();
 
-          const cliResult = adapters.cli.getService().validateConfig(testCase.config);
+          const cliResult = adapters.cli
+            .getService()
+            .validateConfig(testCase.config);
 
           const formState = configToFormState(testCase.config);
           const webResult = adapters.web.validate(formState);
@@ -254,12 +264,14 @@ describe('Cross-Adapter Parity Tests', () => {
       });
     });
 
-    describe('entropy parity', () => {
+    describe("entropy parity", () => {
       ENTROPY_PARITY_CASES.forEach((testCase) => {
         it(`[${testCase.id}] CLI and Web produce identical entropy`, () => {
           const adapters = createDeterministicAdapters();
 
-          const cliEntropy = adapters.cli.getService().calculateEntropy(testCase.config);
+          const cliEntropy = adapters.cli
+            .getService()
+            .calculateEntropy(testCase.config);
 
           const formState = configToFormState(testCase.config);
           const webEntropy = adapters.web.calculateEntropy(formState);
@@ -273,13 +285,15 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // ALL ADAPTERS SIMULTANEOUS PARITY
   // =========================================================================
-  describe('All Adapters Simultaneous Parity', () => {
+  describe("All Adapters Simultaneous Parity", () => {
     GENERATION_PARITY_CASES.forEach((testCase) => {
       it(`[${testCase.id}] All adapters produce identical passwords`, async () => {
         const adapters = createDeterministicAdapters();
 
         const corePassword = await adapters.core.generate(testCase.config);
-        const cliPassword = await adapters.cli.getService().generate(testCase.config);
+        const cliPassword = await adapters.cli
+          .getService()
+          .generate(testCase.config);
 
         const formState = configToFormState(testCase.config);
         const webResult = await adapters.web.generate(formState);
@@ -295,8 +309,8 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // SUPPORTED TYPES PARITY
   // =========================================================================
-  describe('Supported Types Parity', () => {
-    it('all adapters report same supported types', () => {
+  describe("Supported Types Parity", () => {
+    it("all adapters report same supported types", () => {
       const adapters = createDeterministicAdapters();
 
       const coreTypes = adapters.core.getSupportedTypes();
@@ -311,17 +325,17 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // SEED CONSISTENCY ACROSS ADAPTERS
   // =========================================================================
-  describe('Seed Consistency', () => {
+  describe("Seed Consistency", () => {
     Object.entries(PARITY_SEEDS).forEach(([seedName, seedValue]) => {
       it(`all adapters produce consistent output with ${seedName} seed`, async () => {
         const factory = new AdapterFactory(seedValue);
         const adapters = factory.createAllAdapters();
 
         const config = {
-          type: 'strong',
+          type: "strong",
           length: 16,
           iteration: 4,
-          separator: '-',
+          separator: "-",
         };
 
         const corePassword = await adapters.core.generate(config);
@@ -339,7 +353,7 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // FUTURE MOBILE ADAPTER TEMPLATE
   // =========================================================================
-  describe('Mobile Adapter Template (Placeholder)', () => {
+  describe("Mobile Adapter Template (Placeholder)", () => {
     /*
      * When adding a Mobile adapter, implement tests following this pattern:
      *
@@ -366,7 +380,7 @@ describe('Cross-Adapter Parity Tests', () => {
      * });
      */
 
-    it('placeholder for future Mobile adapter parity tests', () => {
+    it("placeholder for future Mobile adapter parity tests", () => {
       // This test passes as a reminder to implement Mobile parity tests
       expect(true).to.be.true;
     });
@@ -375,12 +389,15 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // ERROR PARITY
   // =========================================================================
-  describe('Error Parity', () => {
+  describe("Error Parity", () => {
     const errorCases = [
-      { config: { length: 16 }, description: 'missing type' },
-      { config: { type: 'unknown' }, description: 'unknown type' },
-      { config: { type: 'strong', length: 0 }, description: 'zero length' },
-      { config: { type: 'strong', length: 16, iteration: 0 }, description: 'zero iteration' },
+      { config: { length: 16 }, description: "missing type" },
+      { config: { type: "unknown" }, description: "unknown type" },
+      { config: { type: "strong", length: 0 }, description: "zero length" },
+      {
+        config: { type: "strong", length: 16, iteration: 0 },
+        description: "zero iteration",
+      },
     ];
 
     errorCases.forEach(({ config, description }) => {
@@ -407,21 +424,21 @@ describe('Cross-Adapter Parity Tests', () => {
   // =========================================================================
   // PARITY QUALITY GATE SUMMARY
   // =========================================================================
-  describe('Parity Quality Gate', () => {
-    it('should pass all generation parity tests', () => {
+  describe("Parity Quality Gate", () => {
+    it("should pass all generation parity tests", () => {
       expect(GENERATION_PARITY_CASES.length).to.be.greaterThan(0);
     });
 
-    it('should pass all validation parity tests', () => {
+    it("should pass all validation parity tests", () => {
       expect(VALIDATION_PARITY_CASES.length).to.be.greaterThan(0);
     });
 
-    it('should pass all entropy parity tests', () => {
+    it("should pass all entropy parity tests", () => {
       expect(ENTROPY_PARITY_CASES.length).to.be.greaterThan(0);
     });
 
-    it('should have comparison cases for all adapter pairs', () => {
-      const cliVsWebCases = generateComparisonCases('cli', 'web');
+    it("should have comparison cases for all adapter pairs", () => {
+      const cliVsWebCases = generateComparisonCases("cli", "web");
       expect(cliVsWebCases.length).to.equal(GENERATION_PARITY_CASES.length);
     });
   });

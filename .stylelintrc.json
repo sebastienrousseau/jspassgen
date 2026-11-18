@@ -13,7 +13,7 @@
     "stylelint-prettier"
   ],
   "rules": {
-		"prettier/prettier": true,
+    "prettier/prettier": true,
     "at-rule-no-vendor-prefix": true,
     "block-no-empty": true,
     "color-hex-length": "long",
@@ -53,7 +53,7 @@
     "property-no-vendor-prefix": true,
     "selector-class-pattern": "[a-z-]+",
     "selector-id-pattern": "[a-z-]+",
-    "selector-nested-pattern" : "((^|(,\\s*))&:{1,2}[a-zA-Z]+)+$",
+    "selector-nested-pattern": "((^|(,\\s*))&:{1,2}[a-zA-Z]+)+$",
     "selector-no-vendor-prefix": true,
     "selector-pseudo-element-colon-notation": "double",
     "unit-allowed-list": ["px", "%", "em", "ms", "rem", "vw", "vh", "deg", "s"],

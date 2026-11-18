@@ -168,12 +168,12 @@ export const searchCommands = (commands, query) => {
   const results = commands
     .map((cmd) => {
       const nameScore = fuzzyMatch(query, cmd.name);
-      const descScore = cmd.description ?
-        fuzzyMatch(query, cmd.description) * 0.5 :
-        0;
-      const categoryScore = cmd.category ?
-        fuzzyMatch(query, cmd.category) * 0.3 :
-        0;
+      const descScore = cmd.description
+        ? fuzzyMatch(query, cmd.description) * 0.5
+        : 0;
+      const categoryScore = cmd.category
+        ? fuzzyMatch(query, cmd.category) * 0.3
+        : 0;
       const totalScore = Math.max(nameScore, descScore, categoryScore);
       return { cmd, score: totalScore };
     })
@@ -265,9 +265,9 @@ export class CommandPalette {
   moveUp() {
     if (this.filteredCommands.length > 0) {
       this.selectedIndex =
-        this.selectedIndex > 0 ?
-          this.selectedIndex - 1 :
-          this.filteredCommands.length - 1;
+        this.selectedIndex > 0
+          ? this.selectedIndex - 1
+          : this.filteredCommands.length - 1;
     }
   }
 
@@ -277,9 +277,9 @@ export class CommandPalette {
   moveDown() {
     if (this.filteredCommands.length > 0) {
       this.selectedIndex =
-        this.selectedIndex < this.filteredCommands.length - 1 ?
-          this.selectedIndex + 1 :
-          0;
+        this.selectedIndex < this.filteredCommands.length - 1
+          ? this.selectedIndex + 1
+          : 0;
     }
   }
 
@@ -406,9 +406,9 @@ export class CommandPalette {
         const isSelected = i === this.selectedIndex;
 
         const pointer = isSelected ? colors.primary(icons.pointer) : " ";
-        const name = isSelected ?
-          colors.text(cmd.name) :
-          colors.muted(cmd.name);
+        const name = isSelected
+          ? colors.text(cmd.name)
+          : colors.muted(cmd.name);
         const shortcut = cmd.shortcut ? colors.dim(` [${cmd.shortcut}]`) : "";
 
         const lineContent = `${pointer} ${name}${shortcut}`;
