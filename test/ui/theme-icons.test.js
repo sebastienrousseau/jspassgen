@@ -398,15 +398,14 @@ describe("Theme Module", function () {
       expect(result).to.be.a("string");
       // Strip ANSI and verify it contains expected text
       const stripped = stripAnsi(result);
-      expect(stripped).to.include("password");
-      expect(stripped).to.include("generator");
+      expect(stripped).to.include("jspassgen");
     });
 
     it("should have inline function that returns branded string", function () {
       const result = brand.inline();
       expect(result).to.be.a("string");
       const stripped = stripAnsi(result);
-      expect(stripped).to.include("pwgen");
+      expect(stripped).to.include("jspassgen");
     });
 
     it("should have version function that returns version string", function () {
@@ -910,8 +909,7 @@ describe("Theme Module", function () {
         const result = renderPassword("mypassword123");
         const stripped = stripAnsi(result);
         expect(stripped).to.include("mypassword123");
-        expect(stripped).to.include("password");
-        expect(stripped).to.include("generator");
+        expect(stripped).to.include("jspassgen");
       });
 
       it("should show copied indicator when copied is true", function () {

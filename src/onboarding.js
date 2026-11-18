@@ -28,15 +28,17 @@ const { version } = require("../package.json");
 // BRANDING
 // ============================================================================
 
+const BRAND_WIDTH = 37;
+const BRAND_VERSION = `v${version}`;
 const BRAND = `
-  ${gradient.primary("╭─────────────────────────────────────╮")}
+  ${gradient.primary(`╭${"─".repeat(BRAND_WIDTH)}╮`)}
   ${gradient.primary("│")}  ${colors.text("✦")} ${gradient.primary(
-    "p a s s w o r d",
-  )}                  ${gradient.primary("│")}
-  ${gradient.primary("│")}    ${gradient.primary("g e n e r a t o r")}  ${colors.dim(
-    `v${version}`,
-  )}        ${gradient.primary("│")}
-  ${gradient.primary("╰─────────────────────────────────────╯")}
+    "j s p a s s g e n",
+  )}${" ".repeat(BRAND_WIDTH - 21)}${gradient.primary("│")}
+  ${gradient.primary("│")}    ${colors.dim(BRAND_VERSION)}${" ".repeat(
+    Math.max(0, BRAND_WIDTH - 4 - BRAND_VERSION.length),
+  )}${gradient.primary("│")}
+  ${gradient.primary(`╰${"─".repeat(BRAND_WIDTH)}╯`)}
 `;
 
 // ============================================================================
@@ -51,7 +53,7 @@ const createReadlineInterface = () => {
       `  ${colors.error(icons.error)} ${colors.dim("requires a terminal")}`,
     );
     console.log(
-      `  ${colors.dim("try:")} ${colors.command("password-generator -p quick")}`,
+      `  ${colors.dim("try:")} ${colors.command("jspassgen -p quick")}`,
     );
     console.log("");
     process.exit(1);
@@ -320,7 +322,10 @@ export const runOnboarding = async () => {
 
 export const isFirstRun = (args) => {
   const nonInteractiveArgs = args.filter(
-    (arg) => arg !== "--interactive" && arg !== "password-generator",
+    (arg) =>
+      arg !== "--interactive" &&
+      arg !== "jspassgen" &&
+      arg !== "password-generator",
   );
   return nonInteractiveArgs.length === 0;
 };

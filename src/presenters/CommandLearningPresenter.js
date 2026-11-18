@@ -12,7 +12,7 @@ export class CommandLearningPresenter {
    * Generate equivalent CLI command
    */
   static generateEquivalentCommand(config, preset, clipboard) {
-    let cliCommand = "password-generator";
+    let cliCommand = "jspassgen";
 
     if (preset) {
       cliCommand += ` -p ${preset}`;

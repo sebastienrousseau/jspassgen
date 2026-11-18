@@ -64,22 +64,22 @@ node_modules: package.json
 # @HELP Run directory clean.
 run: run-base64 run-strong run-memorable
 
-# @HELP Run base64 password-generator.
+# @HELP Run base64 jspassgen.
 run-base64:
 	@echo
-	@echo "Running an example of a base64 password-generator..."
+	@echo "Running jspassgen with the base64 type..."
 	node . -t base64 -l 8 -i 4 -s -
 
-# @HELP Run strong password-generator.
+# @HELP Run strong jspassgen.
 run-strong:
 	@echo
-	@echo "Running an example of a strong password-generator..."
+	@echo "Running jspassgen with the strong type..."
 	node . -t strong -l 8 -i 4 -s -
 
-# @HELP Run base64 password-generator.
+# @HELP Run memorable jspassgen.
 run-memorable:
 	@echo
-	@echo "Running an example of a memorable password-generator..."
+	@echo "Running jspassgen with the memorable type..."
 	node . -t memorable -i 4 -s -
 
 

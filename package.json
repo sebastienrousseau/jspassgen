@@ -85,7 +85,7 @@
       "url": "https://paypal.me/wwdseb"
     }
   ],
-  "homepage": "https://password-generator.pro",
+  "homepage": "https://jspassgen.com",
   "keywords": [
     "base64",
     "complex",
@@ -200,7 +200,7 @@
     "conformance:check": "node scripts/conformance/generate.js --check"
   },
   "type": "module",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "overrides": {
     "lodash": "^4.18.1",
     "mocha": {

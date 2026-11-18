@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.22] - Unreleased
+## [0.0.22] - 2026-11-18
 
 ### Security
 
@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README**: Follows the family layout that every jspassgen repository now shares. Unsourced benchmark figures are replaced by the committed results, the CLI presets and defaults match the source, the 0.0.x stability policy replaces a 1.x one, the "WCAG 2.2 AAA" claim (which the accessibility audit records as failing) is dropped, and the full CLI flag table moves to `docs/README-REFERENCE.md`.
 - **Security Policy**: `SECURITY.md` listed 1.1.x and 1.0.x as supported and everything below 1.0 as not, which excluded every release. It now states the family policy: the latest released `0.0.x` receives security fixes.
 - **npm Release Check**: The release workflow's last step now polls npmjs for up to 10 minutes before failing. The 0.0.21 publish succeeded with provenance, but the check ran 0.2 seconds later, while npm was still processing the version, and failed the run.
+- **Node Adapters**: `createNodeAdapters()` called `require()` inside an ES module and threw `ReferenceError` on every call, and `@sebastienrousseau/jspassgen/adapters/node` did not export the EFF word list, so a core service built from those adapters drew `memorable` words from a 48-word placeholder and could not make `diceware` passphrases. The entry point now exports `EFFDicewareDictionary`, and `createNodeAdapters()` works and includes it as `dictionary`.
+- **Core Package Metadata**: `packages/core/package.json`, which ships inside the npm package, declared the MIT licence alone, Node.js 18 and version 0.0.1. It now declares `Apache-2.0 OR MIT`, Node.js 22 like the package around it, and the suite version.
+- **Command Name**: The CLI's usage line, banners, tips and the commands it teaches now say `jspassgen`. `password-generator` still runs as an older alias. The package `homepage` points to jspassgen.com instead of password-generator.pro, and the docs name the real package (`@sebastienrousseau/jspassgen/core`) instead of `@password-generator/core`.
+- **OpenSSF Scorecard**: The README showed a Scorecard badge with no data because the repository had no Scorecard workflow. `scorecard.yml` now publishes results weekly and on every push to `main`.
 
 ## [0.0.21] - 2026-11-18
 

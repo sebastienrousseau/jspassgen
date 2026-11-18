@@ -79,7 +79,7 @@ Start a local development server:
 ```bash
 # Clone the repository
 git clone https://github.com/sebastienrousseau/jspassgen.git
-cd password-generator
+cd jspassgen
 
 # Serve the demo
 npx serve src/ui/web/demo
@@ -145,7 +145,7 @@ const password = await PasswordGenerator({
 Import the platform-agnostic core for maximum control:
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 import { NodeCryptoRandom } from './src/adapters/node/crypto-random.js';
 
 const service = createQuickService(new NodeCryptoRandom());
@@ -171,7 +171,7 @@ console.log(`Entropy: ${entropy.totalBits} bits`);
 Use the core package with Web Crypto API:
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 import { WebCryptoRandom } from './adapters/web/WebCryptoRandom.js';
 
 const service = createQuickService(new WebCryptoRandom());
@@ -294,7 +294,7 @@ npx @sebastienrousseau/jspassgen -t strong -l 12 -i 2 -s ''
 ```bash
 # Clone the repository
 git clone https://github.com/sebastienrousseau/jspassgen.git
-cd password-generator
+cd jspassgen
 
 # Install dependencies
 npm install

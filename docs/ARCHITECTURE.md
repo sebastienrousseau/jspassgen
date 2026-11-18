@@ -168,7 +168,7 @@ export class NodeCryptoRandom extends RandomGeneratorPort {
 
 ## Core Package Contract
 
-The `@password-generator/core` package enforces strict isolation rules:
+The `@sebastienrousseau/jspassgen/core` package enforces strict isolation rules:
 
 ### Forbidden in Core
 
@@ -269,7 +269,7 @@ function generatePassword(length) {
 
 **After** (hexagonal pattern):
 ```javascript
-import { createService } from "@password-generator/core";
+import { createService } from "@sebastienrousseau/jspassgen/core";
 import { NodeCryptoRandom } from "./adapters/node/crypto-random.js";
 
 const service = createService({}, {
@@ -294,7 +294,7 @@ const password = generateStrongPassword(16);
 
 **After**:
 ```javascript
-import { createQuickService } from "@password-generator/core";
+import { createQuickService } from "@sebastienrousseau/jspassgen/core";
 import { NodeCryptoRandom } from "./adapters/node/crypto-random.js";
 
 const service = createQuickService(new NodeCryptoRandom());
@@ -311,7 +311,7 @@ const password = await service.generate({
 Use the core in a browser:
 
 ```javascript
-import { createService } from "@password-generator/core";
+import { createService } from "@sebastienrousseau/jspassgen/core";
 import { WebCryptoRandom } from "./adapters/web/WebCryptoRandom.js";
 
 const service = createService({}, {
@@ -330,7 +330,7 @@ const password = await service.generate({
 ## Project Structure
 
 ```
-password-generator/
+jspassgen/
 ├── packages/
 │   └── core/                    # Platform-agnostic core
 │       ├── src/

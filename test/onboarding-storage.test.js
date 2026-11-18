@@ -523,6 +523,11 @@ describe("Onboarding - isFirstRun Edge Cases", function () {
       expect(isFirstRun(["123"])).to.be.false;
     });
 
+    it("should return true when only interactive and jspassgen args", function () {
+      expect(isFirstRun(["--interactive", "jspassgen"])).to.be.true;
+      expect(isFirstRun(["jspassgen"])).to.be.true;
+    });
+
     it("should handle multiple password-generator entries", function () {
       expect(isFirstRun(["password-generator", "password-generator"])).to.be
         .true;

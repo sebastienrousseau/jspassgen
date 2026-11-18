@@ -10,10 +10,9 @@ here was checked against the source on the `feat/v0.0.22` branch
 
 ```bash
 jspassgen [options]
-password-generator [options]
 ```
 
-Both commands run the same entry point (`index.js`). The flags are defined
+`password-generator` is an older alias of the same entry point (`index.js`). The flags are defined
 in [`src/config.js`](../src/config.js) and registered with commander in
 [`src/cli/CLIController.js`](../src/cli/CLIController.js);
 `jspassgen --help` prints them.

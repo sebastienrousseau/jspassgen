@@ -64,8 +64,8 @@ npm install @sebastienrousseau/jspassgen
 The package is ESM only (`"type": "module"`) and ships its own TypeScript
 declarations.
 
-Install the `jspassgen` and `password-generator` commands globally, or run
-them once without installing:
+Install the `jspassgen` command globally, or run it once without
+installing:
 
 ```bash
 npm install -g @sebastienrousseau/jspassgen
@@ -152,7 +152,7 @@ conformance kit as its generators land.
 | [`jspassgen.github.io`](https://github.com/sebastienrousseau/jspassgen.github.io) | Source of [jspassgen.com](https://jspassgen.com) | Evaluating the suite |
 
 Only `@sebastienrousseau/jspassgen` is on a package registry so far
-(0.0.21 on npm). The table gives each member's purpose; the other members
+(0.0.22 on npm). The table gives each member's purpose; the other members
 are early, each README's Capabilities at a glance says what works today,
 and they first publish with the suite's first lockstep release.
 
@@ -227,13 +227,15 @@ The exports map in `package.json` defines four entry points:
   `createService`, the generators, entropy functions, character sets and
   the port interfaces (`RandomGeneratorPort`, `DictionaryPort`,
   `MemoryDictionary` and the rest).
-- `@sebastienrousseau/jspassgen/adapters/node`: `NodeCryptoRandom`, a
-  console logger, file storage and a system clock for the core's ports.
+- `@sebastienrousseau/jspassgen/adapters/node`: `NodeCryptoRandom`,
+  `EFFDicewareDictionary` (the 7,776-word EFF list), a console logger,
+  file storage and a system clock for the core's ports, and
+  `createNodeAdapters()`, which builds them all.
 - `@sebastienrousseau/jspassgen/workers`: a Web Worker pool for bulk
   generation in the browser (`createWorkerPool`, `generatePasswordsBulk`).
 
-The package also installs two commands, `jspassgen` and
-`password-generator`, which share one entry point. `packages/core` imports
+The package installs the `jspassgen` command; `password-generator` is an
+older alias for the same entry point, kept so existing scripts still run. `packages/core` imports
 nothing from Node.js or the browser; `npm run verify:core` and CI enforce
 it. The web UI lives in [`src/ui/web/`](src/ui/web/) and is deployed from
 `main` to [doc.jspassgen.com](https://doc.jspassgen.com/).
@@ -256,20 +258,14 @@ it. The web UI lives in [`src/ui/web/`](src/ui/web/) and is deployed from
 
 The core takes its randomness and word list as ports. Without a
 `dictionary`, `memorable` draws from a 48-word placeholder list and
-`diceware` throws, so pass the 7,776-word EFF list:
+`diceware` throws. `createNodeAdapters()` supplies the 7,776-word EFF
+list with Node.js `crypto`:
 
 ```javascript
-import { readFile } from 'node:fs/promises';
-import { createService, MemoryDictionary } from '@sebastienrousseau/jspassgen/core';
-import { NodeCryptoRandom } from '@sebastienrousseau/jspassgen/adapters/node';
+import { createService } from '@sebastienrousseau/jspassgen/core';
+import { createNodeAdapters } from '@sebastienrousseau/jspassgen/adapters/node';
 
-// The EFF list, for example conformance/wordlists/eff-diceware.json.
-const { words } = JSON.parse(await readFile('eff-diceware.json', 'utf8'));
-
-const service = createService(
-  {},
-  { randomGenerator: new NodeCryptoRandom(), dictionary: new MemoryDictionary(words) },
-);
+const service = createService({}, createNodeAdapters());
 
 const result = await service.generate({ type: 'diceware', iteration: 6, includeEntropy: true });
 console.log(result.password, result.entropy);
@@ -356,7 +352,7 @@ fixed the web UI and Web Worker, which built the core without a word list:
 strength. The hosted demo picked up the fix once the Pages workflow began
 building from `main` (see [`CHANGELOG.md`](CHANGELOG.md)).
 
-0.0.21 is published to npm with provenance (SLSA provenance v1), and CI
+0.0.22 is published to npm with provenance (SLSA provenance v1), and CI
 runs `npm audit` and a Codacy scan.
 
 ---

@@ -64,10 +64,10 @@ The core package uses hexagonal architecture (ports and adapters) to remain plat
          +------------------------+------------------------+
                                   |
                                   v
-                    +-------------+-------------+
-                    |   @password-generator/core |
-                    |   (RandomGeneratorPort)    |
-                    +---------------------------+
+               +------------------+------------------+
+               |  @sebastienrousseau/jspassgen/core  |
+               |        (RandomGeneratorPort)        |
+               +-------------------------------------+
 ```
 
 ### Required Port: RandomGeneratorPort
@@ -102,7 +102,7 @@ class MyRandomGenerator {
 Creates a service with minimal configuration:
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createQuickService(randomGenerator);
 ```
@@ -112,7 +112,7 @@ const service = createQuickService(randomGenerator);
 Creates a service with full port configuration:
 
 ```javascript
-import { createService } from '@password-generator/core';
+import { createService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createService(
   { validateOnInit: true },
@@ -188,7 +188,7 @@ const types = service.getSupportedTypes();
 ### Node.js with crypto module
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 import { randomBytes, randomInt } from 'crypto';
 
 const nodeRandom = {
@@ -207,7 +207,7 @@ const password = await service.generate({ type: 'strong', length: 16, iteration:
 ### Browser with Web Crypto API
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 
 const browserRandom = {
   async generateRandomBytes(n) {
@@ -229,4 +229,5 @@ const password = await service.generate({ type: 'memorable', iteration: 4 });
 
 ## License
 
-MIT
+Licensed under either [Apache License 2.0](../../LICENSE-APACHE) or
+[MIT](../../LICENSE-MIT), at your option.

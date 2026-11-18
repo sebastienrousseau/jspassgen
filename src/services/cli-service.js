@@ -31,7 +31,7 @@ import { normalizeEntropy } from "../../packages/core/src/domain/entropy-normali
  * Generates the equivalent CLI command string based on the configuration used.
  */
 export const generateEquivalentCommand = (config, preset, opts) => {
-  const parts = ["password-generator"];
+  const parts = ["jspassgen"];
 
   if (preset) {
     parts.push(`-p ${preset}`);
@@ -340,32 +340,32 @@ export const displayFormattedOutput = (
  * Displays help for non-TTY environments
  */
 export const displayNonTTYHelp = () => {
-  console.log(renderHeader("password generator"));
+  console.log(renderHeader("jspassgen"));
   console.log(`  ${colors.dim("run in a terminal for interactive mode")}`);
   console.log("");
   console.log(`  ${colors.dim("quick start")}`);
   console.log(
-    `  ${colors.muted(icons.pointer)} ${colors.command("password-generator -p quick")}`,
+    `  ${colors.muted(icons.pointer)} ${colors.command("jspassgen -p quick")}`,
   );
   console.log(
-    `  ${colors.muted(icons.pointer)} ${colors.command("password-generator -p secure")}`,
+    `  ${colors.muted(icons.pointer)} ${colors.command("jspassgen -p secure")}`,
   );
   console.log(
-    `  ${colors.muted(icons.pointer)} ${colors.command("password-generator --help")}`,
+    `  ${colors.muted(icons.pointer)} ${colors.command("jspassgen --help")}`,
   );
   console.log("");
   console.log(`  ${colors.dim("bulk operations")}`);
   console.log(
-    `  ${colors.muted(icons.pointer)} ${colors.command("password-generator -p quick -n 5 -f json")}`,
+    `  ${colors.muted(icons.pointer)} ${colors.command("jspassgen -p quick -n 5 -f json")}`,
   );
   console.log(
     `  ${colors.muted(icons.pointer)} ${colors.command(
-      "password-generator -p secure -n 10 -f csv",
+      "jspassgen -p secure -n 10 -f csv",
     )}`,
   );
   console.log(
     `  ${colors.muted(icons.pointer)} ${colors.command(
-      "password-generator -p memorable -n 3 -f yaml",
+      "jspassgen -p memorable -n 3 -f yaml",
     )}`,
   );
   console.log("");

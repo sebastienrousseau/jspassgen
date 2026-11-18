@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "coreVersion": "0.0.21",
+  "coreVersion": "0.0.22",
   "floatTolerance": 1e-9,
   "draws": "Each draw is [max, value]: one call to generateRandomInt(max) that returned value. A port replays the draws in order and must request the same max each time and use every draw.",
   "generation": "Call generate(input) with includeEntropy; expect password, entropy and securityLevel, or an error message."
