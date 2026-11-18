@@ -2,9 +2,20 @@ name: Release
 
 # `published`, not `created`: gh release create with assets makes a draft,
 # uploads, then publishes, and a draft's `created` event starts no workflow.
+#
+# workflow_dispatch publishes an existing release tag to npmjs only, for a
+# release whose npm job failed: the maintainer runs it from main with the
+# tag, approves the npm environment, and the tag's code is built, tested
+# and published with provenance. GitHub Packages is left alone.
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to publish to npmjs (e.g. v0.0.21)"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,6 +31,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -36,24 +49,28 @@ jobs:
       - name: Testing & Coverage
         run: npm run test
 
+  # Publishes to npmjs only after a maintainer approves the `npm`
+  # environment (required reviewer). The package's npm trusted publisher
+  # accepts this repository's release.yml in that environment, so no
+  # NPM_TOKEN is stored and nothing reaches npm without the approval.
+  # npm attaches provenance. This replaces `npm stage publish`, which
+  # failed with E401 for 0.0.21 even with a stage-only trusted publisher;
+  # it is the setup crypto-service releases with.
   publish-npmjs:
     needs: build
     runs-on: ubuntu-latest
+    environment: npm
     permissions:
       contents: read
-      id-token: write
+      id-token: write # npm trusted publishing (OIDC) and provenance
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.tag || github.ref }}
           persist-credentials: false
 
-      # Releases use npm trusted publishing (OIDC): npmjs.com trusts this
-      # repository's release.yml for @sebastienrousseau/jspassgen, so no
-      # NPM_TOKEN is stored. The trusted publisher may only *stage* a
-      # release: a maintainer makes it public with `npm stage approve <id>`,
-      # which asks for their second factor.
       # package-manager-cache is off so a cached npm cannot shadow the npm
-      # bundled with Node 24.
+      # bundled with Node 24 (>= 11.5.1, needed for trusted publishing).
       - name: Use Node.js 24.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -61,26 +78,14 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false
 
-      # `npm stage` arrived after OIDC support (npm 11.5.1), so an npm that
-      # has it can do both.
-      - name: Require an npm that can stage with OIDC
-        run: |
-          npm --version
-          if ! npm stage --help >/dev/null 2>&1; then
-            echo "::error::npm $(npm --version) has no 'npm stage'; staged publishing needs a newer npm"
-            exit 1
-          fi
-
-      # A trusted publisher can only be attached to a package that already
-      # exists, so a new package's first version is published by hand. The
-      # job then has nothing to stage for that version.
       - name: Skip versions already on npmjs
         id: registry
         run: |
           name=$(node -p "require('./package.json').name")
           version=$(node -p "require('./package.json').version")
+          echo "spec=${name}@${version}" >> "$GITHUB_OUTPUT"
           if npm view "${name}@${version}" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
-            echo "::notice::${name}@${version} is already on npmjs; nothing to stage"
+            echo "::notice::${name}@${version} is already on npmjs; nothing to publish"
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
             echo "published=false" >> "$GITHUB_OUTPUT"
@@ -94,14 +99,21 @@ jobs:
         if: steps.registry.outputs.published == 'false'
         run: npm run build
 
-      - name: Stage for npmjs with SLSA provenance
+      - name: Publish to npmjs with provenance
         if: steps.registry.outputs.published == 'false'
         run: |
           cd dist
-          npm stage publish --access public --tag latest --provenance --registry=https://registry.npmjs.org
+          npm publish --access public --tag latest --provenance --registry=https://registry.npmjs.org
+
+      - name: Verify the version is public on npmjs
+        if: steps.registry.outputs.published == 'false'
+        env:
+          SPEC: ${{ steps.registry.outputs.spec }}
+        run: npm view "$SPEC" version dist.integrity --registry=https://registry.npmjs.org
 
   publish-github-packages:
     needs: build
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
