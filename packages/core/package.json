@@ -1,6 +1,6 @@
 {
   "name": "@jspassgen/core",
-  "version": "0.0.1",
+  "version": "0.0.22",
   "description": "Platform-agnostic core logic for password generation",
   "type": "module",
   "main": "src/index.js",
@@ -23,7 +23,7 @@
     "coverage:html": "c8 --all --src src --100 --reporter html mocha 'test/**/*.test.js'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "keywords": [
     "password",
@@ -31,5 +31,5 @@
     "core",
     "platform-agnostic"
   ],
-  "license": "MIT"
+  "license": "Apache-2.0 OR MIT"
 }
