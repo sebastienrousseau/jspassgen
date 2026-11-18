@@ -15,26 +15,26 @@ import {
   FixedClock,
   MemoryDictionary,
   DEFAULT_WORD_LIST,
-} from './ports/index.js';
-import { generate, GENERATOR_REGISTRY } from './generators/index.js';
+} from "./ports/index.js";
+import { generate, GENERATOR_REGISTRY } from "./generators/index.js";
 import {
   isValidPasswordType,
   VALID_PASSWORD_TYPES,
   validatePasswordTypeConfig,
-} from './domain/password-types.js';
+} from "./domain/password-types.js";
 import {
   calculateTotalEntropy,
   getSecurityLevel,
   getSecurityRecommendation,
-} from './domain/entropy-calculator.js';
+} from "./domain/entropy-calculator.js";
 import {
   normalizeEntropy,
   getSecurityLevel as getSecurityLevelFromNormalizer,
-} from './domain/entropy-normalizer.js';
-import { PASSWORD_ERRORS } from './errors.js';
+} from "./domain/entropy-normalizer.js";
+import { PASSWORD_ERRORS } from "./errors.js";
 
 /** Password types whose entropy depends on the size of the word list. */
-const WORD_LIST_TYPES = new Set(['memorable', 'diceware']);
+const WORD_LIST_TYPES = new Set(["memorable", "diceware"]);
 
 /**
  * Adds the injected dictionary's real size to a word-based configuration,
@@ -46,7 +46,10 @@ const WORD_LIST_TYPES = new Set(['memorable', 'diceware']);
  * @returns {Promise<Object>} The configuration to measure entropy with.
  */
 const withDictionarySize = async (config, dictionary) => {
-  if (!WORD_LIST_TYPES.has(config.type) || config.dictionarySize !== undefined) {
+  if (
+    !WORD_LIST_TYPES.has(config.type) ||
+    config.dictionarySize !== undefined
+  ) {
     return config;
   }
   return { ...config, dictionarySize: await dictionary.getWordCount() };
@@ -72,9 +75,218 @@ const measureEntropy = (password, config, logger) => {
     const entropy = calculateTotalEntropy(config);
     return { entropy, securityLevel: getSecurityLevel(entropy) };
   } catch (fallbackError) {
-    logger.warn(`Failed to calculate fallback entropy: ${fallbackError.message}`);
+    logger.warn(
+      `Failed to calculate fallback entropy: ${fallbackError.message}`,
+    );
   }
-  return { entropy: 0, securityLevel: 'WEAK' };
+  return { entropy: 0, securityLevel: "WEAK" };
+};
+
+/** Default per-chunk length when a configuration omits one. */
+const DEFAULT_LENGTH = 16;
+
+/** What one unit of a password is, for per-unit entropy display. */
+const UNIT_KIND = {
+  memorable: "word",
+  diceware: "word",
+  pronounceable: "word", // one syllable
+  strong: "char",
+  base64: "char",
+  "quantum-resistant": "char",
+  honeyword: "char",
+  custom: "customChar",
+};
+
+/**
+ * Fills in default ports and validates them if asked.
+ *
+ * @param {Object} ports - Port implementations.
+ * @param {boolean} validateOnInit - Whether to validate the ports.
+ * @returns {Object} The resolved ports.
+ * @throws {Error} If validation is requested and fails.
+ */
+const resolvePorts = (ports, validateOnInit) => {
+  const resolvedPorts = {
+    randomGenerator: ports.randomGenerator,
+    logger: ports.logger ?? new NoOpLogger(),
+    storage: ports.storage ?? new MemoryStorage(),
+    clock: ports.clock ?? new FixedClock(),
+    dictionary: ports.dictionary ?? new MemoryDictionary(DEFAULT_WORD_LIST),
+  };
+  if (validateOnInit) {
+    const validation = validatePorts(resolvedPorts);
+    if (!validation.isValid) {
+      throw new Error(
+        `Port validation failed: ${validation.errors.join("; ")}`,
+      );
+    }
+  }
+  return resolvedPorts;
+};
+
+/**
+ * Throws unless the type is known and the configuration valid for it.
+ *
+ * @param {string} type - Password type.
+ * @param {Object} config - Configuration to validate.
+ * @throws {Error} The first failing check, or all validation errors joined.
+ */
+const assertGeneratable = (type, config) => {
+  if (!type) {
+    throw new Error(PASSWORD_ERRORS.TYPE_REQUIRED);
+  }
+  if (!isValidPasswordType(type)) {
+    throw new Error(PASSWORD_ERRORS.UNKNOWN_TYPE(type, VALID_PASSWORD_TYPES));
+  }
+  const validation = validatePasswordTypeConfig(type, config);
+  if (!validation.isValid) {
+    throw new Error(validation.errors.join("; "));
+  }
+};
+
+/**
+ * Wraps a generated password with its entropy, security level and metadata.
+ *
+ * @param {string|Object} password - The generated password.
+ * @param {Object} generatedConfig - The configuration it was generated with.
+ * @param {Object} resolvedPorts - The service's ports.
+ * @returns {Promise<Object>} The result object.
+ */
+const withEntropy = async (password, generatedConfig, resolvedPorts) => {
+  const entropyConfig = await withDictionarySize(
+    generatedConfig,
+    resolvedPorts.dictionary,
+  );
+  const { entropy, securityLevel } = measureEntropy(
+    password,
+    entropyConfig,
+    resolvedPorts.logger,
+  );
+  return {
+    password,
+    entropy: Math.round(entropy * 100) / 100, // Round to 2 decimal places
+    securityLevel,
+    metadata: {
+      type: generatedConfig.type,
+      length: password.length,
+      config: generatedConfig,
+      generatedAt: await resolvedPorts.clock.now(),
+    },
+  };
+};
+
+/**
+ * Validates options, generates a password and optionally measures it.
+ *
+ * @param {Object} resolvedPorts - The service's ports.
+ * @param {Object} options - Generation options (see the service's generate()).
+ * @returns {Promise<string|Object>} The password, or the result object with entropy.
+ */
+const generateWithPorts = async (resolvedPorts, options) => {
+  const {
+    type,
+    length = DEFAULT_LENGTH,
+    iteration = 1,
+    separator = "-",
+    includeEntropy = false,
+    ...restOptions
+  } = options;
+
+  assertGeneratable(type, { length, iteration, ...restOptions });
+
+  const generatedConfig = {
+    type,
+    length,
+    iteration,
+    separator,
+    ...restOptions,
+  };
+  const password = await generate(generatedConfig, resolvedPorts);
+
+  // Return just password if entropy not requested (for backward compatibility)
+  if (!includeEntropy) {
+    return password;
+  }
+  return withEntropy(password, generatedConfig, resolvedPorts);
+};
+
+/**
+ * Estimates entropy for a configuration with the unified normalizer,
+ * falling back to the legacy calculation.
+ *
+ * @param {Object} options - Password configuration.
+ * @param {string} fakePassword - Password to measure (empty for configuration only).
+ * @param {Function} perUnit - (type, options, totalBits) => per-unit entropy.
+ * @returns {Object} Entropy information.
+ */
+const estimateEntropy = (options, fakePassword, perUnit) => {
+  const { type, length = DEFAULT_LENGTH, iteration = 1 } = options;
+
+  try {
+    const normalizedEntropy = normalizeEntropy(fakePassword, type, options);
+    // Legacy entropy still drives the recommendation
+    const legacyEntropy = calculateTotalEntropy({ type, length, iteration });
+    return {
+      totalBits: normalizedEntropy,
+      securityLevel: getSecurityLevelFromNormalizer(normalizedEntropy),
+      recommendation: getSecurityRecommendation(legacyEntropy),
+      perUnit: perUnit(type, options, normalizedEntropy),
+      legacy: {
+        totalBits: legacyEntropy,
+        securityLevel: getSecurityLevel(legacyEntropy),
+      },
+    };
+  } catch (error) {
+    const totalEntropy = calculateTotalEntropy({ type, length, iteration });
+    return {
+      totalBits: totalEntropy,
+      securityLevel: getSecurityLevel(totalEntropy),
+      recommendation: getSecurityRecommendation(totalEntropy),
+      perUnit:
+        type === "memorable"
+          ? totalEntropy / iteration
+          : length * Math.log2(64),
+      error: error.message,
+    };
+  }
+};
+
+/**
+ * Entropy per word, syllable or character, for display.
+ *
+ * @param {string} type - Password type.
+ * @param {Object} options - Configuration with iteration and length.
+ * @param {number} totalEntropy - Total entropy in bits.
+ * @returns {number} Entropy per unit, or 0 for an unknown type or no units.
+ */
+const perUnitEntropy = (type, options, totalEntropy) => {
+  const { iteration = 1, length = DEFAULT_LENGTH } = options;
+  const unitCount = {
+    word: iteration,
+    char: length * iteration,
+    customChar: (length || 1) * iteration,
+  }[UNIT_KIND[type]];
+  return unitCount > 0 ? totalEntropy / unitCount : 0;
+};
+
+/**
+ * Validates a configuration without generating.
+ *
+ * @param {Object} options - Password configuration.
+ * @returns {Object} Validation result with isValid and errors.
+ */
+const validateOptions = (options) => {
+  const { type } = options;
+  if (!type) {
+    return { isValid: false, errors: [PASSWORD_ERRORS.TYPE_REQUIRED] };
+  }
+  if (!isValidPasswordType(type)) {
+    return {
+      isValid: false,
+      errors: [PASSWORD_ERRORS.UNKNOWN_TYPE(type, VALID_PASSWORD_TYPES)],
+    };
+  }
+  return validatePasswordTypeConfig(type, options);
 };
 
 /**
@@ -93,229 +305,47 @@ const measureEntropy = (password, config, logger) => {
  */
 export function createService(config = {}, ports) {
   const { validateOnInit = true } = config;
-
-  // Fill in defaults for optional ports
-  const resolvedPorts = {
-    randomGenerator: ports.randomGenerator,
-    logger: ports.logger ?? new NoOpLogger(),
-    storage: ports.storage ?? new MemoryStorage(),
-    clock: ports.clock ?? new FixedClock(),
-    dictionary: ports.dictionary ?? new MemoryDictionary(DEFAULT_WORD_LIST),
-  };
-
-  // Validate ports if requested
-  if (validateOnInit) {
-    const validation = validatePorts(resolvedPorts);
-    if (!validation.isValid) {
-      throw new Error(`Port validation failed: ${validation.errors.join('; ')}`);
-    }
-  }
+  const resolvedPorts = resolvePorts(ports, validateOnInit);
 
   return {
     /**
-     * Generates a password with the specified configuration.
-     *
-     * @param {Object} options - Password generation options.
-     * @param {string} options.type - Password type (strong, base64, memorable).
-     * @param {number} [options.length=16] - Length of each chunk.
-     * @param {number} [options.iteration=1] - Number of chunks/words.
-     * @param {string} [options.separator="-"] - Separator between chunks/words.
-     * @param {boolean} [options.includeEntropy=false] - Whether to include entropy calculation in result.
-     * @returns {Promise<string|Object>} The generated password (string) or with entropy info (object if includeEntropy=true).
+     * Generates a password. Options: type, length (16), iteration (1),
+     * separator ("-"), includeEntropy (false), plus type-specific options.
+     * Resolves to the password, or { password, entropy, securityLevel,
+     * metadata } when includeEntropy is true.
      */
-    async generate(options) {
-      const {
-        type,
-        length = 16,
-        iteration = 1,
-        separator = '-',
-        includeEntropy = false,
-        ...restOptions
-      } = options;
+    generate: (options) => generateWithPorts(resolvedPorts, options),
 
-      // Validate type
-      if (!type) {
-        throw new Error(PASSWORD_ERRORS.TYPE_REQUIRED);
-      }
-
-      if (!isValidPasswordType(type)) {
-        throw new Error(PASSWORD_ERRORS.UNKNOWN_TYPE(type, VALID_PASSWORD_TYPES));
-      }
-
-      // Validate configuration
-      const validation = validatePasswordTypeConfig(type, {
-        length,
-        iteration,
-        ...restOptions,
-      });
-      if (!validation.isValid) {
-        throw new Error(validation.errors.join('; '));
-      }
-
-      // Generate password
-      const generatedConfig = { type, length, iteration, separator, ...restOptions };
-      const password = await generate(generatedConfig, resolvedPorts);
-
-      // Return just password if entropy not requested (for backward compatibility)
-      if (!includeEntropy) {
-        return password;
-      }
-
-      const entropyConfig = await withDictionarySize(generatedConfig, resolvedPorts.dictionary);
-      const { entropy, securityLevel } = measureEntropy(
-        password,
-        entropyConfig,
-        resolvedPorts.logger
-      );
-
-      return {
-        password,
-        entropy: Math.round(entropy * 100) / 100, // Round to 2 decimal places
-        securityLevel,
-        metadata: {
-          type,
-          length: password.length,
-          config: generatedConfig,
-          generatedAt: await resolvedPorts.clock.now(),
-        },
-      };
-    },
-
-    /**
-     * Generates multiple passwords with different configurations.
-     *
-     * @param {Array<Object>} optionsArray - Array of password options.
-     * @returns {Promise<Array>} Array of generated password results.
-     */
+    /** Generates one result per options object, in order. */
     async generateMultiple(optionsArray) {
       const results = [];
       for (const options of optionsArray) {
-        const result = await this.generate(options);
-        results.push(result);
+        results.push(await this.generate(options));
       }
       return results;
     },
-    /**
-     * Calculates the entropy for a password configuration using the unified normalizer.
-     *
-     * @param {Object} options - Password configuration.
-     * @param {string} [fakePassword] - Optional fake password for calculation (uses empty string if not provided).
-     * @returns {Object} Entropy information.
-     */
-    calculateEntropy(options, fakePassword = '') {
-      const { type, length = 16, iteration = 1 } = options;
 
-      try {
-        // Use the unified entropy normalizer
-        const normalizedEntropy = normalizeEntropy(fakePassword, type, options);
-        const securityLevel = getSecurityLevelFromNormalizer(normalizedEntropy);
-
-        // Fallback to old entropy for recommendation
-        const legacyEntropy = calculateTotalEntropy({ type, length, iteration });
-        const recommendation = getSecurityRecommendation(legacyEntropy);
-
-        return {
-          totalBits: normalizedEntropy,
-          securityLevel,
-          recommendation,
-          perUnit: this._calculatePerUnitEntropy(type, options, normalizedEntropy),
-          legacy: {
-            totalBits: legacyEntropy,
-            securityLevel: getSecurityLevel(legacyEntropy),
-          },
-        };
-      } catch (error) {
-        // Fallback to legacy calculation
-        const totalEntropy = calculateTotalEntropy({ type, length, iteration });
-        const securityLevel = getSecurityLevel(totalEntropy);
-        const recommendation = getSecurityRecommendation(totalEntropy);
-
-        return {
-          totalBits: totalEntropy,
-          securityLevel,
-          recommendation,
-          perUnit: type === 'memorable' ? totalEntropy / iteration : length * Math.log2(64),
-          error: error.message,
-        };
-      }
+    /** Estimates entropy for a configuration (optionally for a given password). */
+    calculateEntropy(options, fakePassword = "") {
+      return estimateEntropy(options, fakePassword, (type, opts, bits) =>
+        this._calculatePerUnitEntropy(type, opts, bits),
+      );
     },
+
     /** Calculates per-unit entropy for display purposes. @private */
-    _calculatePerUnitEntropy(type, options, totalEntropy) {
-      const { iteration = 1, length = 16 } = options;
+    _calculatePerUnitEntropy: perUnitEntropy,
 
-      switch (type) {
-        case 'memorable':
-        case 'diceware':
-          return iteration > 0 ? totalEntropy / iteration : 0;
-        case 'pronounceable':
-          return iteration > 0 ? totalEntropy / iteration : 0; // per syllable
-        case 'strong':
-        case 'base64':
-        case 'quantum-resistant':
-        case 'honeyword': {
-          const totalChars = length * iteration;
-          return totalChars > 0 ? totalEntropy / totalChars : 0; // per character
-        }
-        case 'custom': {
-          const customTotalChars = (length || 1) * iteration;
-          return customTotalChars > 0 ? totalEntropy / customTotalChars : 0; // per character
-        }
-        default:
-          return 0;
-      }
-    },
+    /** Validates a configuration without generating. */
+    validateConfig: validateOptions,
 
-    /**
-     * Validates a password configuration without generating.
-     *
-     * @param {Object} options - Password configuration.
-     * @returns {Object} Validation result.
-     */
-    validateConfig(options) {
-      const { type } = options;
+    /** Gets the list of supported password types. */
+    getSupportedTypes: () => [...VALID_PASSWORD_TYPES],
 
-      if (!type) {
-        return { isValid: false, errors: [PASSWORD_ERRORS.TYPE_REQUIRED] };
-      }
+    /** Gets the generator for a type, or null if there is none. */
+    getGenerator: (type) => GENERATOR_REGISTRY[type] ?? null,
 
-      if (!isValidPasswordType(type)) {
-        return {
-          isValid: false,
-          errors: [PASSWORD_ERRORS.UNKNOWN_TYPE(type, VALID_PASSWORD_TYPES)],
-        };
-      }
-
-      return validatePasswordTypeConfig(type, options);
-    },
-
-    /**
-     * Gets the list of supported password types.
-     *
-     * @returns {string[]} Array of supported types.
-     */
-    getSupportedTypes() {
-      return [...VALID_PASSWORD_TYPES];
-    },
-
-    /**
-     * Gets the generator for a specific password type.
-     *
-     * @param {string} type - Password type.
-     * @returns {Object|null} Generator or null if not found.
-     */
-    getGenerator(type) {
-      return GENERATOR_REGISTRY[type] ?? null;
-    },
-
-    /**
-     * Gets the resolved ports used by this service.
-     * Useful for debugging and testing.
-     *
-     * @returns {Object} The port implementations.
-     */
-    getPorts() {
-      return { ...resolvedPorts };
-    },
+    /** Gets the resolved ports used by this service (for debugging and tests). */
+    getPorts: () => ({ ...resolvedPorts }),
   };
 }
 
