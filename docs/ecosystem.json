@@ -1,0 +1,147 @@
+{
+  "$comment": "SPDX-License-Identifier: Apache-2.0 OR MIT. The jspassgen suite: every member releases the same version (docs/adr/0001-ecosystem-lockstep.md). Registry ids are proposed until a member first publishes.",
+  "owner": "sebastienrousseau",
+  "site": "https://jspassgen.com",
+  "members": [
+    {
+      "name": "jspassgen",
+      "kind": "core",
+      "language": "JavaScript",
+      "repo": "jspassgen",
+      "purpose": "Zero-dependency password and passphrase core, Node.js library, web UI and workers; source of the conformance kit.",
+      "registry": {
+        "type": "npm",
+        "ids": ["@sebastienrousseau/jspassgen"]
+      },
+      "versionFile": "package.json",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "active"
+    },
+    {
+      "name": "jspassgen-cli",
+      "kind": "tool",
+      "language": "JavaScript",
+      "repo": "jspassgen-cli",
+      "purpose": "Command-line generator built on @sebastienrousseau/jspassgen.",
+      "registry": {
+        "type": "npm",
+        "ids": ["@sebastienrousseau/jspassgen-cli"]
+      },
+      "versionFile": "package.json",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-mcp",
+      "kind": "tool",
+      "language": "JavaScript",
+      "repo": "jspassgen-mcp",
+      "purpose": "Local stdio MCP server: generate passwords and passphrases, estimate entropy, analyse strength.",
+      "registry": {
+        "type": "npm",
+        "ids": ["@sebastienrousseau/jspassgen-mcp"]
+      },
+      "versionFile": "package.json",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-lsp",
+      "kind": "tool",
+      "language": "JavaScript",
+      "repo": "jspassgen-lsp",
+      "purpose": "Language server flagging weak literal secrets in configuration and .env files, with a replace-with-generated code action.",
+      "registry": {
+        "type": "npm",
+        "ids": ["@sebastienrousseau/jspassgen-lsp"]
+      },
+      "versionFile": "package.json",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-sdk-python",
+      "kind": "sdk",
+      "language": "Python",
+      "repo": "jspassgen-sdk-python",
+      "purpose": "Native Python port of the core on the secrets module, proven by the conformance kit.",
+      "registry": {
+        "type": "pypi",
+        "ids": ["jspassgen"]
+      },
+      "versionFile": "pyproject.toml",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-sdk-rust",
+      "kind": "sdk",
+      "language": "Rust",
+      "repo": "jspassgen-sdk-rust",
+      "purpose": "Native Rust port of the core on the OS CSPRNG, proven by the conformance kit.",
+      "registry": {
+        "type": "crates",
+        "ids": ["jspassgen"]
+      },
+      "versionFile": "Cargo.toml",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-sdk-java",
+      "kind": "sdk",
+      "language": "Java",
+      "repo": "jspassgen-sdk-java",
+      "purpose": "Native Java port of the core on SecureRandom, proven by the conformance kit.",
+      "registry": {
+        "type": "maven",
+        "ids": ["com.jspassgen:jspassgen"]
+      },
+      "versionFile": "pom.xml",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-sdk-dotnet",
+      "kind": "sdk",
+      "language": ".NET",
+      "repo": "jspassgen-sdk-dotnet",
+      "purpose": "Native .NET port of the core on RandomNumberGenerator, proven by the conformance kit.",
+      "registry": {
+        "type": "nuget",
+        "ids": ["Jspassgen"]
+      },
+      "versionFile": "Directory.Build.props",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen-sdk-cpp",
+      "kind": "sdk",
+      "language": "C++",
+      "repo": "jspassgen-sdk-cpp",
+      "purpose": "Native C++17 port of the core on the OS CSPRNG, proven by the conformance kit.",
+      "registry": {
+        "type": "github-release",
+        "ids": ["jspassgen"]
+      },
+      "versionFile": "CMakeLists.txt",
+      "releaseAssets": ["SHA256SUMS"],
+      "status": "planned"
+    },
+    {
+      "name": "jspassgen.github.io",
+      "kind": "site",
+      "language": "HTML",
+      "repo": "jspassgen.github.io",
+      "purpose": "jspassgen.com: product site, ecosystem and SDK pages.",
+      "registry": {
+        "type": "none",
+        "ids": []
+      },
+      "versionFile": "VERSION",
+      "releaseAssets": [],
+      "status": "planned"
+    }
+  ]
+}
