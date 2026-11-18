@@ -9,9 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.21] - Unreleased
 
+### Added
+
+- **Ecosystem Design**: [ADR 0001](docs/adr/0001-ecosystem-lockstep.md) and `docs/ecosystem.json` define the jspassgen suite: this package, a CLI, MCP and LSP servers, native Python, Rust, Java, .NET and C++ ports proven by a shared conformance kit, and the site, all released at one version. The new members are planned; 0.0.21 ships as jspassgen alone.
+
+### Changed
+
+- **Dependencies**: commander ^15.1.0; development tooling @babel/cli ^8.1.0, @babel/core ^8.1.2, @babel/eslint-parser ^8.1.2, @babel/register ^8.1.2, esmock 3.0.0, jsdom 31.0.1, prettier 3.10.1 and rimraf ^6.1.4.
+- **jshint Removed**: minimatch 11 breaks jshint 2, and no script or workflow ran it, so it and `.jshintrc` are gone.
+
 ### Security
 
 - `package-lock.json` moves serialize-javascript 7.1.2 to 7.1.4 (Dependabot alert: low).
+- npm overrides force minimatch ^11.0.1 and glob ^14.0.2 across the dependency tree, since their dependants still request the vulnerable majors (Dependabot alert #107).
 
 ### Fixed
 
