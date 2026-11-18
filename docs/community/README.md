@@ -58,7 +58,7 @@ Password Generator welcomes contributions from the community.
 ```bash
 # Clone the repository
 git clone https://github.com/sebastienrousseau/jspassgen.git
-cd password-generator
+cd jspassgen
 
 # Install dependencies
 npm install

@@ -17,14 +17,14 @@ Technical documentation for Password Generator. This section covers API specific
 
 ## API Reference
 
-The `@password-generator/core` package provides the platform-agnostic password generation engine.
+The `@sebastienrousseau/jspassgen/core` package provides the platform-agnostic password generation engine.
 
 ### Service Factory
 
 Create a password service with full configuration:
 
 ```javascript
-import { createService } from '@password-generator/core';
+import { createService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createService(
   { validateOnInit: true },
@@ -41,7 +41,7 @@ const service = createService(
 Create a minimal service with defaults:
 
 ```javascript
-import { createQuickService } from '@password-generator/core';
+import { createQuickService } from '@sebastienrousseau/jspassgen/core';
 
 const service = createQuickService(new NodeCryptoRandom());
 ```
@@ -216,7 +216,7 @@ class WebCryptoRandom extends RandomGeneratorPort {
 Import error templates for consistent error messages:
 
 ```javascript
-import { CRYPTO_ERRORS, PASSWORD_ERRORS, PORT_ERRORS } from '@password-generator/core';
+import { CRYPTO_ERRORS, PASSWORD_ERRORS, PORT_ERRORS } from '@sebastienrousseau/jspassgen/core';
 ```
 
 ### CRYPTO_ERRORS

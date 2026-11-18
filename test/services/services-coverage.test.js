@@ -40,7 +40,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick");
+      expect(result).to.equal("jspassgen -p quick");
     });
 
     it("should generate command with preset and overridden type", () => {
@@ -58,7 +58,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -t base64");
+      expect(result).to.equal("jspassgen -p quick -t base64");
     });
 
     it("should generate command with preset and overridden length", () => {
@@ -76,7 +76,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -l 20");
+      expect(result).to.equal("jspassgen -p quick -l 20");
     });
 
     it("should generate command with preset and overridden iteration", () => {
@@ -94,7 +94,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -i 6");
+      expect(result).to.equal("jspassgen -p quick -i 6");
     });
 
     it("should generate command with preset and overridden separator", () => {
@@ -112,7 +112,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal('password-generator -p quick -s "_"');
+      expect(result).to.equal('jspassgen -p quick -s "_"');
     });
 
     it("should generate command without preset", () => {
@@ -126,7 +126,7 @@ describe("cli-service", () => {
 
       const result = cliService.generateEquivalentCommand(config, null, opts);
 
-      expect(result).to.equal('password-generator -t strong -l 16 -i 3 -s "-"');
+      expect(result).to.equal('jspassgen -t strong -l 16 -i 3 -s "-"');
     });
 
     it("should generate command without preset and without length", () => {
@@ -139,7 +139,7 @@ describe("cli-service", () => {
 
       const result = cliService.generateEquivalentCommand(config, null, opts);
 
-      expect(result).to.equal('password-generator -t memorable -i 4 -s "-"');
+      expect(result).to.equal('jspassgen -t memorable -i 4 -s "-"');
     });
 
     it("should add clipboard flag when enabled", () => {
@@ -157,7 +157,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -c");
+      expect(result).to.equal("jspassgen -p quick -c");
     });
 
     it("should add audit flag when enabled", () => {
@@ -175,7 +175,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -a");
+      expect(result).to.equal("jspassgen -p quick -a");
     });
 
     it("should add both clipboard and audit flags", () => {
@@ -193,7 +193,7 @@ describe("cli-service", () => {
         opts,
       );
 
-      expect(result).to.equal("password-generator -p quick -c -a");
+      expect(result).to.equal("jspassgen -p quick -c -a");
     });
 
     it("should generate command with all overrides and flags", () => {
@@ -212,7 +212,7 @@ describe("cli-service", () => {
       );
 
       expect(result).to.equal(
-        'password-generator -p quick -t base64 -l 20 -i 6 -s "_" -c -a',
+        'jspassgen -p quick -t base64 -l 20 -i 6 -s "_" -c -a',
       );
     });
   });
@@ -281,7 +281,7 @@ describe("cli-service", () => {
 
   describe("displayCommandLearningPanel", () => {
     it("should display command learning panel with shortcuts", () => {
-      const command = "password-generator -p quick";
+      const command = "jspassgen -p quick";
 
       cliService.displayCommandLearningPanel(command);
 
@@ -538,9 +538,9 @@ describe("cli-service", () => {
       const allCalls = consoleLogStub.args
         .map((args) => args.join(" "))
         .join(" ");
-      expect(allCalls).to.include("password-generator -p quick");
-      expect(allCalls).to.include("password-generator -p secure");
-      expect(allCalls).to.include("password-generator --help");
+      expect(allCalls).to.include("jspassgen -p quick");
+      expect(allCalls).to.include("jspassgen -p secure");
+      expect(allCalls).to.include("jspassgen --help");
     });
   });
 });

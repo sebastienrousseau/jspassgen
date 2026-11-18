@@ -42,8 +42,9 @@ const caps = capabilities();
  */
 export const brand = {
   mini: () =>
-    `  ✦ ${chalk.hex("#FF6B9D")("password")} ${chalk.hex("#9D4EDD")("generator")} ${chalk.hex("#4B5563")(`v${version}`)}`,
-  inline: () => chalk.hex("#FF6B9D")("✦") + " " + chalk.hex("#9D4EDD")("pwgen"),
+    `  ✦ ${chalk.hex("#FF6B9D")("js")}${chalk.hex("#9D4EDD")("passgen")} ${chalk.hex("#4B5563")(`v${version}`)}`,
+  inline: () =>
+    chalk.hex("#FF6B9D")("✦") + " " + chalk.hex("#9D4EDD")("jspassgen"),
   version: () => version,
 };
 

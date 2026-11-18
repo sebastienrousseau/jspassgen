@@ -88,7 +88,7 @@ export interface CLIOptionsConfig {
  * ```typescript
  * import { CLI_OPTIONS } from './config.js';
  *
- * console.log(CLI_OPTIONS.name); // "password-generator"
+ * console.log(CLI_OPTIONS.name); // "jspassgen"
  * console.log(CLI_OPTIONS.options.type.flags); // "-t, --type <type>"
  * console.log(CLI_OPTIONS.options.length.defaultValue); // 16
  * ```

@@ -132,7 +132,7 @@ describe("Config Module", function () {
 
   describe("CLI_OPTIONS", function () {
     it("should have program name and description", function () {
-      expect(CLI_OPTIONS.name).to.equal("password-generator");
+      expect(CLI_OPTIONS.name).to.equal("jspassgen");
       expect(CLI_OPTIONS.description).to.be.a("string");
     });
 

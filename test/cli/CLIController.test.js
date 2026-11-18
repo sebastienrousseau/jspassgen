@@ -60,7 +60,7 @@ describe("CLIController", () => {
 
     it("should setup commander program with correct options", () => {
       const program = controller.getProgram();
-      expect(program.name()).to.equal("password-generator");
+      expect(program.name()).to.equal("jspassgen");
       expect(program.description()).to.include(
         "fast, simple and powerful utility",
       );
@@ -195,7 +195,7 @@ describe("CLIController", () => {
   describe("getProgram", () => {
     it("should return the Commander program instance", () => {
       const program = controller.getProgram();
-      expect(program.name()).to.equal("password-generator");
+      expect(program.name()).to.equal("jspassgen");
     });
   });
 

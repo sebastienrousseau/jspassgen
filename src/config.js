@@ -120,7 +120,7 @@ export const CLI_DEFAULTS = {
  * CLI option configurations for the commander program.
  */
 export const CLI_OPTIONS = {
-  name: "password-generator",
+  name: "jspassgen",
   description:
     "A fast, simple and powerful utility for generating strong, unique and quantum-resistant passwords",
   options: {

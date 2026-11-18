@@ -122,11 +122,11 @@ function generatePassword(length) { }
 
 Install the package:
 
-npm install @anthropic/password-generator
+npm install @sebastienrousseau/jspassgen
 
 Import the generator:
 
-import { PasswordService } from '@anthropic/password-generator';
+import { createService } from '@sebastienrousseau/jspassgen/core';
 
 ## Features
 
@@ -142,11 +142,11 @@ import { PasswordService } from '@anthropic/password-generator';
 
 You will need to install the package by running:
 
-npm install @anthropic/password-generator
+npm install @sebastienrousseau/jspassgen
 
 Then you can import the generator:
 
-import { PasswordService } from '@anthropic/password-generator';
+import { createService } from '@sebastienrousseau/jspassgen/core';
 
 ## Features
 

@@ -25,7 +25,7 @@ describe("CommandLearningPresenter", function () {
         "quick",
         false,
       );
-      expect(command).to.equal("password-generator -p quick");
+      expect(command).to.equal("jspassgen -p quick");
     });
 
     it("should generate command with preset and clipboard", function () {
@@ -34,7 +34,7 @@ describe("CommandLearningPresenter", function () {
         "secure",
         true,
       );
-      expect(command).to.equal("password-generator -p secure -c");
+      expect(command).to.equal("jspassgen -p secure -c");
     });
 
     it("should generate custom command without preset", function () {
@@ -44,7 +44,7 @@ describe("CommandLearningPresenter", function () {
         false,
       );
       expect(command).to.equal(
-        "password-generator --type strong --length 16 --iteration 4",
+        "jspassgen --type strong --length 16 --iteration 4",
       );
     });
 
@@ -151,8 +151,7 @@ describe("CommandLearningPresenter", function () {
         "quick",
       );
       expect(logOutput.some((line) => line.includes("command"))).to.be.true;
-      expect(logOutput.some((line) => line.includes("password-generator"))).to
-        .be.true;
+      expect(logOutput.some((line) => line.includes("jspassgen"))).to.be.true;
       expect(logOutput.some((line) => line.includes("breakdown"))).to.be.true;
     });
 
