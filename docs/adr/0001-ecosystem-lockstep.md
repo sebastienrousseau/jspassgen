@@ -175,8 +175,9 @@ check.
    committed kit matches the generator.
 3. `scripts/check-ecosystem.mjs` and `suite-consistency.yml`, checking only
    `active` members.
-4. Create the eight new repositories from the standard in section 5, each
-   private until its gate passes.
+4. Create the eight new repositories, public from the start, then scaffold
+   each to the standard in section 5. A member stays `planned` until its
+   gate passes.
 5. Ports and tools, each passing the kit; the site gains an ecosystem page
    read from `docs/ecosystem.json`.
 6. First suite release; every member flips to `active`.
