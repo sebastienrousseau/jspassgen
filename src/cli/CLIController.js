@@ -23,8 +23,7 @@ import {
   startAuditSession,
   completeAuditSession,
 } from "../services/audit-service.js";
-
-let clipboardTimer = null;
+import { CLIPBOARD_TTL_MS, scheduleClipboardClear } from "./clipboard.js";
 
 /**
  * Extracts a secret string to copy from a password result (handles both string and honeyword objects).
@@ -52,31 +51,18 @@ function extractSecretToCopy(password) {
  * Returns true if clipboard copy was successful, false otherwise.
  *
  * @param {string} text - The text to copy to clipboard
- * @param {number} [ttlMs=45000] - Time to live before clipboard is wiped (default: 45s)
+ * @param {number} [ttlMs=CLIPBOARD_TTL_MS] - Time to live before clipboard is wiped (default: 45s)
  * @returns {Promise<boolean>} Whether the copy operation succeeded
  */
-async function copyToClipboard(text, ttlMs = 45000) {
+async function copyToClipboard(text, ttlMs = CLIPBOARD_TTL_MS) {
   try {
     // Dynamic import of clipboardy to handle optional dependency
     const { default: clipboardy } = await import("clipboardy");
     await clipboardy.write(text);
 
-    // Schedule unref'd timer to clear clipboard after TTL
-    if (clipboardTimer) {
-      clearTimeout(clipboardTimer);
-    }
-    clipboardTimer = setTimeout(async () => {
-      try {
-        const current = await clipboardy.read();
-        if (current === text) {
-          await clipboardy.write("");
-        }
-      } catch {}
-    }, ttlMs);
-
-    if (clipboardTimer.unref) {
-      clipboardTimer.unref();
-    }
+    // The CLI exits right after printing, so the clear runs in a detached
+    // process that outlives it (see ./clipboard.js).
+    scheduleClipboardClear(text, ttlMs);
 
     return true;
   } catch (error) {
