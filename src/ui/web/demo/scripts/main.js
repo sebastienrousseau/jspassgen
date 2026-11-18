@@ -12,6 +12,7 @@ import { initTheme } from "./theme.js";
 import { createWebUIController } from "../../controllers/WebUIController.js";
 import { FormState } from "../../state/FormState.js";
 import { PRESET_PROFILES } from "../../../../config.js";
+import { createPasswordHistory, purgeStoredHistory } from "./history.js";
 
 // Use shared preset configurations from config.js
 // Extended with additional presets for web UI
@@ -24,9 +25,9 @@ const PRESETS = {
 let controller;
 let currentPassword = null;
 let isPasswordVisible = true;
-let passwordHistory = [];
+// Recent passwords, in memory only: they are secrets and are never stored.
 const MAX_HISTORY = 5;
-const STORAGE_KEY_HISTORY = "jspassgen_history";
+const passwordHistory = createPasswordHistory(MAX_HISTORY);
 const STORAGE_KEY_ONBOARDING = "jspassgen_onboarding_seen";
 
 // DOM Elements
@@ -539,44 +540,11 @@ function dismissOnboarding() {
 }
 
 /**
- * Loads password history from localStorage.
- */
-function loadPasswordHistory() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
-    if (stored) {
-      passwordHistory = JSON.parse(stored);
-      renderPasswordHistory();
-    }
-  } catch {
-    passwordHistory = [];
-  }
-}
-
-/**
- * Saves password history to localStorage.
- */
-function savePasswordHistory() {
-  try {
-    localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(passwordHistory));
-  } catch {
-    // localStorage may be full or disabled
-  }
-}
-
-/**
- * Adds a password to history.
+ * Adds a password to the in-memory history.
  * @param {string} password - The password to add.
  */
 function addToHistory(password) {
-  // Don't add duplicates
-  if (passwordHistory.includes(password)) return;
-
-  passwordHistory.unshift(password);
-  if (passwordHistory.length > MAX_HISTORY) {
-    passwordHistory.pop();
-  }
-  savePasswordHistory();
+  passwordHistory.add(password);
   renderPasswordHistory();
 }
 
@@ -586,15 +554,16 @@ function addToHistory(password) {
 function renderPasswordHistory() {
   if (!elements.historyList || !elements.historyCount) return;
 
-  elements.historyCount.textContent = `(${passwordHistory.length})`;
+  const recent = passwordHistory.list();
+  elements.historyCount.textContent = `(${recent.length})`;
 
-  if (passwordHistory.length === 0) {
+  if (recent.length === 0) {
     elements.historyList.innerHTML =
       '<li class="password-history__empty">No passwords generated yet</li>';
     return;
   }
 
-  elements.historyList.innerHTML = passwordHistory
+  elements.historyList.innerHTML = recent
     .map((pwd, index) => {
       const masked =
         pwd.length > 20 ? pwd.slice(0, 10) + "..." + pwd.slice(-6) : pwd;
@@ -613,7 +582,7 @@ function renderPasswordHistory() {
     .forEach((btn) => {
       btn.addEventListener("click", async () => {
         const index = parseInt(btn.dataset.index, 10);
-        const pwd = passwordHistory[index];
+        const pwd = recent[index];
         if (pwd) {
           try {
             await navigator.clipboard.writeText(pwd);
@@ -631,8 +600,7 @@ function renderPasswordHistory() {
  * Clears password history.
  */
 function clearPasswordHistory() {
-  passwordHistory = [];
-  savePasswordHistory();
+  passwordHistory.clear();
   renderPasswordHistory();
   announceToScreenReader("Password history cleared");
   showToast("History cleared", "success");
@@ -832,8 +800,8 @@ async function init() {
   // Apply default type (strong/random is pre-selected in HTML)
   updateUIForType("strong");
 
-  // Load password history
-  loadPasswordHistory();
+  // Delete the password history versions up to 0.0.21 kept in localStorage
+  purgeStoredHistory();
 
   // Show onboarding for first-time users
   showOnboarding();
