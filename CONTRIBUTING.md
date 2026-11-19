@@ -29,7 +29,7 @@ Found a bug? [Create an issue](https://github.com/sebastienrousseau/jspassgen/is
 ## Development Setup
 
 ### Prerequisites
-- Node.js >= 18.0.0
+- Node.js >= 22.0.0
 - Git
 
 ### Setup Steps
@@ -99,17 +99,23 @@ npm run build
 
 ```
 jspassgen/
+├── packages/core/        # Zero-dependency core: generators, entropy, ports
+│   ├── src/
+│   └── test/
 ├── src/
-│   ├── bin/              # CLI implementation
-│   ├── lib/              # Core password generators
-│   │   ├── base64-password.js
-│   │   ├── memorable-password.js
-│   │   └── strong-password.js
-│   ├── dictionaries/     # Word lists for memorable passwords
-│   └── utils/            # Utility functions
-├── test/                 # Test files
-├── docs/                 # Generated documentation
-└── .github/              # GitHub templates
+│   ├── adapters/         # Node.js and web implementations of the ports
+│   ├── bin/              # jspassgen command
+│   ├── cli/              # CLI controller, clipboard, onboarding
+│   ├── dictionaries/     # EFF Diceware word list
+│   ├── presenters/
+│   ├── services/
+│   ├── ui/               # Terminal UI and the web demo (ui/web)
+│   ├── utils/
+│   └── workers/          # Web Worker pool for bulk generation
+├── conformance/          # Conformance kit for the SDK ports
+├── test/                 # Tests
+├── docs/                 # Documentation and ADRs
+└── .github/              # Workflows and templates
 ```
 
 ### File Naming
@@ -136,7 +142,7 @@ Contributors are recognized in:
 
 ## Questions?
 
-- 💬 [GitHub Discussions](https://github.com/sebastienrousseau/jspassgen/discussions) for questions
+- 💬 [GitHub Issues](https://github.com/sebastienrousseau/jspassgen/issues) for questions
 - 🐛 [GitHub Issues](https://github.com/sebastienrousseau/jspassgen/issues) for bugs
 - 📧 Contact: hello@jspassgen.com
 
