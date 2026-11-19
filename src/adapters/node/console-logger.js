@@ -77,9 +77,9 @@ export class NodeConsoleLogger extends LoggerPort {
     if (this.level <= LogLevel.DEBUG) {
       const formatted = this._format("DEBUG", message);
       if (Object.keys(metadata).length > 0) {
-        console.debug(formatted, metadata);
+        console.debug("%s", formatted, metadata);
       } else {
-        console.debug(formatted);
+        console.debug("%s", formatted);
       }
     }
   }
@@ -94,9 +94,9 @@ export class NodeConsoleLogger extends LoggerPort {
     if (this.level <= LogLevel.INFO) {
       const formatted = this._format("INFO", message);
       if (Object.keys(metadata).length > 0) {
-        console.info(formatted, metadata);
+        console.info("%s", formatted, metadata);
       } else {
-        console.info(formatted);
+        console.info("%s", formatted);
       }
     }
   }
@@ -111,9 +111,9 @@ export class NodeConsoleLogger extends LoggerPort {
     if (this.level <= LogLevel.WARN) {
       const formatted = this._format("WARN", message);
       if (Object.keys(metadata).length > 0) {
-        console.warn(formatted, metadata);
+        console.warn("%s", formatted, metadata);
       } else {
-        console.warn(formatted);
+        console.warn("%s", formatted);
       }
     }
   }
@@ -128,9 +128,9 @@ export class NodeConsoleLogger extends LoggerPort {
     if (this.level <= LogLevel.ERROR) {
       const formatted = this._format("ERROR", message);
       if (error) {
-        console.error(formatted, error);
+        console.error("%s", formatted, error);
       } else {
-        console.error(formatted);
+        console.error("%s", formatted);
       }
     }
   }
