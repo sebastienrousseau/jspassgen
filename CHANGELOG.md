@@ -7,6 +7,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.23] - Unreleased
+
+### Changed
+
+- **Ecosystem inventory**: `docs/ecosystem.json` marks every member
+  `active` (all ten shipped 0.0.22, the first suite release) and names the
+  site `jspassgen.com`; the README's ecosystem section lists where each
+  member is published instead of saying only the core is on a registry.
+
+### Security
+
+- **Workflow permissions**: every workflow defaults to `contents: read`;
+  write scopes (`id-token`, `packages`, `security-events`) sit only on the
+  jobs that use them, and every action is pinned to a commit SHA.
+- **Security policy**: removed the stale `.github/SECURITY.md`, which had
+  no reporting address and took precedence over `SECURITY.md` on GitHub's
+  Security tab.
+- **Static analysis**: CodeQL (`security-extended`) runs on the
+  JavaScript sources and the workflows on every push, pull request and
+  weekly.
+- **Property-based tests**: fast-check checks the core generators'
+  contracts (chunk count and length, alphabet, custom-set exclusions, the
+  2-character minimum, entropy growth, length validation) over 200 drawn
+  configurations each.
+
 ## [0.0.22] - 2026-11-18
 
 ### Security
