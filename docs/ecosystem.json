@@ -1,5 +1,5 @@
 {
-  "$comment": "SPDX-License-Identifier: Apache-2.0 OR MIT. The jspassgen suite: every member releases the same version (docs/adr/0001-ecosystem-lockstep.md). Registry ids are proposed until a member first publishes.",
+  "$comment": "SPDX-License-Identifier: Apache-2.0 OR MIT. The jspassgen suite: every member releases the same version (docs/adr/0001-ecosystem-lockstep.md). Every member published 0.0.22, the first suite release, and is active.",
   "owner": "sebastienrousseau",
   "site": "https://jspassgen.com",
   "members": [
@@ -29,7 +29,7 @@
       },
       "versionFile": "package.json",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-mcp",
@@ -43,7 +43,7 @@
       },
       "versionFile": "package.json",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-lsp",
@@ -57,7 +57,7 @@
       },
       "versionFile": "package.json",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-sdk-python",
@@ -71,7 +71,7 @@
       },
       "versionFile": "pyproject.toml",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-sdk-rust",
@@ -85,7 +85,7 @@
       },
       "versionFile": "Cargo.toml",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-sdk-java",
@@ -99,7 +99,7 @@
       },
       "versionFile": "pom.xml",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-sdk-dotnet",
@@ -113,7 +113,7 @@
       },
       "versionFile": "Directory.Build.props",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
       "name": "jspassgen-sdk-cpp",
@@ -127,10 +127,10 @@
       },
       "versionFile": "CMakeLists.txt",
       "releaseAssets": ["SHA256SUMS"],
-      "status": "planned"
+      "status": "active"
     },
     {
-      "name": "jspassgen.github.io",
+      "name": "jspassgen.com",
       "kind": "site",
       "language": "HTML",
       "repo": "jspassgen.github.io",
@@ -141,7 +141,7 @@
       },
       "versionFile": "VERSION",
       "releaseAssets": [],
-      "status": "planned"
+      "status": "active"
     }
   ]
 }
