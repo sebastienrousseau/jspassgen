@@ -149,7 +149,9 @@ export const BulkPatterns = {
     );
 
     for (let i = 0; i < count; i++) {
-      const rand = Math.random() * totalWeight;
+      // CSPRNG, like everything else that shapes a generated batch.
+      const [draw] = globalThis.crypto.getRandomValues(new Uint32Array(1));
+      const rand = (draw / 2 ** 32) * totalWeight;
       let cumulativeWeight = 0;
       let selectedType = types[0][0];
 

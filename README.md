@@ -343,8 +343,8 @@ Report vulnerabilities privately according to [`SECURITY.md`](SECURITY.md).
 The core takes all randomness from an injected `RandomGeneratorPort`. The
 Node.js adapter uses `crypto.randomInt` and `crypto.randomBytes`; the web
 adapter uses `crypto.getRandomValues`. The core, the adapters and the CLI
-never call `Math.random()`; in `./workers`, `BulkPatterns.mixed` uses it
-only to choose which type to generate next.
+never call `Math.random()`; in `./workers`, `BulkPatterns.mixed` also
+draws which type to generate next from `crypto.getRandomValues`.
 
 The 0.0.21 advisory
 [GHSA-8q9w-f94p-vxg8](https://github.com/sebastienrousseau/jspassgen/security/advisories/GHSA-8q9w-f94p-vxg8)
