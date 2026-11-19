@@ -40,6 +40,7 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.5.7",
     "esmock": "3.0.0",
+    "fast-check": "4.10.2",
     "filesizes": "^0.1.2",
     "jsdoc": "^4.0.2",
     "jsdom": "31.0.1",
