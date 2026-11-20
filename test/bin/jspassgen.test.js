@@ -36,10 +36,11 @@ describe("PasswordGenerator", function () {
     const result = await PasswordGenerator({
       type: "memorable",
       iteration: 4,
-      separator: "-",
+      // Not "-": the EFF list has hyphenated words (t-shirt, yo-yo).
+      separator: "_",
     });
     expect(result).to.be.a("string");
-    const words = result.split("-");
+    const words = result.split("_");
     expect(words).to.have.lengthOf(4);
   });
 

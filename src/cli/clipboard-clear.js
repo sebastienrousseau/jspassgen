@@ -4,8 +4,8 @@
 /**
  * Detached clipboard clearer, started by `scheduleClipboardClear`.
  *
- * Usage: node clipboard-clear.js <ttl-ms>, with the SHA-256 hex digest of
- * the copied text on stdin. The logic is `runClearer` in ./clipboard.js.
+ * Usage: node clipboard-clear.js <ttl-ms>, with the salted scrypt
+ * fingerprint of the copied text on stdin. The logic is `runClearer` in ./clipboard.js.
  *
  * @module cli/clipboard-clear
  */

@@ -14,6 +14,7 @@
 import { createService } from "../../packages/core/src/index.js";
 import { randomInt, bytesToBase64 } from "../adapters/web/webcrypto-random.js";
 import { createEffDicewareDictionary } from "../adapters/web/eff-diceware-dictionary.js";
+import { isTrustedOrigin } from "./message-origin.js";
 
 /**
  * Web Crypto Random Generator implementation for Web Worker context.
@@ -57,6 +58,9 @@ const passwordService = createService(
  * Processes generation requests from the main thread.
  */
 self.onmessage = async function (event) {
+  if (!isTrustedOrigin(event.origin, self.location?.origin)) {
+    return;
+  }
   const { id, action, payload } = event.data;
 
   try {

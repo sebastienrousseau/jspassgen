@@ -38,6 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Owner-only storage files**: `NodeFsStorage` writes files with mode
   0600, and the tests create their directories with `mkdtemp` instead of
   a predictable name in the shared temp directory.
+- **Clipboard fingerprint**: the detached clipboard clearer now receives
+  a salted scrypt fingerprint of the password instead of an unsalted
+  SHA-256 digest, so a leaked fingerprint is expensive to brute-force
+  (CodeQL `js/insufficient-password-hash`).
+- **Worker origin check**: the password worker ignores a message that
+  names an origin other than its own (CodeQL `js/missing-origin-check`).
 - **CSPRNG in the worker pool**: `BulkPatterns.mixed` chose the next
   password type with `Math.random()`; it now uses
   `crypto.getRandomValues`, so nothing in the library calls

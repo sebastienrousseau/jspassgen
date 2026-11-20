@@ -9,11 +9,13 @@ import { fileURLToPath } from "node:url";
 import {
   CLIPBOARD_TTL_MS,
   clearIfUnchanged,
-  digest,
+  fingerprint,
+  matchesFingerprint,
   runClearer,
   scheduleClipboardClear,
 } from "../../src/cli/clipboard.js";
 import { spawnSync } from "node:child_process";
+import { scryptSync } from "node:crypto";
 
 const SECRET = "correct-horse-battery-staple";
 
@@ -70,34 +72,51 @@ describe("CLI clipboard clear", () => {
     expect(child.unrefCalled).to.equal(true);
   });
 
-  it("never puts the password or its digest on the command line", () => {
+  it("sends only a salted fingerprint, over stdin, never the password", () => {
     const { spawnFn, calls } = fakeSpawn();
     scheduleClipboardClear(SECRET, 1234, { spawnFn });
 
     const [{ args, child }] = calls;
-    const commandLine = args.join(" ");
-    expect(commandLine).to.not.include(SECRET);
-    expect(commandLine).to.not.include(digest(SECRET));
+    expect(args.join(" ")).to.not.include(SECRET);
     expect(args.slice(1)).to.deep.equal(["1234"]);
-    expect(child.received).to.equal(`${digest(SECRET)}\n`);
+    expect(child.received).to.not.include(SECRET);
+    const sent = child.received.trim();
+    expect(sent).to.match(/^[0-9a-f]{32}:[0-9a-f]{64}$/);
+    expect(args.join(" ")).to.not.include(sent);
+    expect(matchesFingerprint(SECRET, sent)).to.equal(true);
+  });
+
+  it("salts every fingerprint, so equal passwords look different", () => {
+    expect(fingerprint(SECRET)).to.not.equal(fingerprint(SECRET));
+  });
+
+  it("derives the fingerprint with scrypt, not a fast hash", () => {
+    const salt = Buffer.alloc(16, 1);
+    expect(fingerprint("abc", salt)).to.equal(
+      `${salt.toString("hex")}:${scryptSync("abc", salt, 32).toString("hex")}`,
+    );
+  });
+
+  it("rejects a malformed fingerprint", () => {
+    for (const bad of ["", "zz", `${"0".repeat(32)}:${"0".repeat(63)}`]) {
+      expect(matchesFingerprint(SECRET, bad)).to.equal(false);
+    }
   });
 
   it("clears the clipboard when it still holds the password", async () => {
     const clipboard = fakeClipboard(SECRET);
-    expect(await clearIfUnchanged(clipboard, digest(SECRET))).to.equal(true);
+    expect(await clearIfUnchanged(clipboard, fingerprint(SECRET))).to.equal(
+      true,
+    );
     expect(clipboard.value).to.equal("");
   });
 
   it("leaves the clipboard alone when the user copied something else", async () => {
     const clipboard = fakeClipboard("something the user copied later");
-    expect(await clearIfUnchanged(clipboard, digest(SECRET))).to.equal(false);
-    expect(clipboard.value).to.equal("something the user copied later");
-  });
-
-  it("digests with SHA-256", () => {
-    expect(digest("abc")).to.equal(
-      "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+    expect(await clearIfUnchanged(clipboard, fingerprint(SECRET))).to.equal(
+      false,
     );
+    expect(clipboard.value).to.equal("something the user copied later");
   });
 });
 
@@ -109,7 +128,7 @@ describe("CLI clipboard clearing process", () => {
     let waited = null;
     const cleared = await runClearer({
       ttlArg: "45000",
-      input: `${digest(SECRET)}\n`,
+      input: `${fingerprint(SECRET)}\n`,
       loadClipboard: async () => clipboard,
       wait: async (ms) => {
         waited = ms;
@@ -120,14 +139,15 @@ describe("CLI clipboard clearing process", () => {
     expect(clipboard.value).to.equal("");
   });
 
-  it("does nothing with a bad TTL or digest", async () => {
+  it("does nothing with a bad TTL or fingerprint", async () => {
     const clipboard = fakeClipboard(SECRET);
     const load = async () => clipboard;
     for (const [ttlArg, input] of [
-      ["abc", digest(SECRET)],
-      ["-1", digest(SECRET)],
-      ["1.5", digest(SECRET)],
-      ["10", "not-a-digest"],
+      ["abc", fingerprint(SECRET)],
+      ["-1", fingerprint(SECRET)],
+      ["1.5", fingerprint(SECRET)],
+      ["10", "not-a-fingerprint"],
+      ["10", "a".repeat(64)],
       ["10", ""],
     ]) {
       expect(
@@ -140,7 +160,7 @@ describe("CLI clipboard clearing process", () => {
   it("swallows a clipboard that cannot be loaded or read", async () => {
     const cleared = await runClearer({
       ttlArg: "0",
-      input: digest(SECRET),
+      input: fingerprint(SECRET),
       loadClipboard: async () => {
         throw new Error("no clipboard");
       },
@@ -154,7 +174,7 @@ describe("CLI clipboard clearing process", () => {
       new URL("../../src/cli/clipboard-clear.js", import.meta.url),
     );
     const result = spawnSync(process.execPath, [script, "abc"], {
-      input: "not-a-digest\n",
+      input: "not-a-fingerprint\n",
       timeout: 10000,
     });
     expect(result.status).to.equal(0);
