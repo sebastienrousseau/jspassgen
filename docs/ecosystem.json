@@ -50,7 +50,7 @@
       "kind": "tool",
       "language": "JavaScript",
       "repo": "jspassgen-lsp",
-      "purpose": "Language server flagging weak literal secrets in configuration and .env files, with a replace-with-generated code action.",
+      "purpose": "Language server over stdio: completes the LSP handshake today; flagging weak literal secrets in configuration and .env files, with a replace-with-generated code action, is planned.",
       "registry": {
         "type": "npm",
         "ids": ["@sebastienrousseau/jspassgen-lsp"]
