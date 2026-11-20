@@ -18,7 +18,9 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 ### How to Report
 
 1. **DO NOT** open a public GitHub issue for security vulnerabilities
-2. Email security concerns to: hello@jspassgen.com
+2. Report it privately through GitHub:
+   [Report a vulnerability](https://github.com/sebastienrousseau/jspassgen/security/advisories/new),
+   or email hello@jspassgen.com
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
@@ -63,7 +65,9 @@ Both methods are backed by operating system entropy sources and are suitable for
 ### Code Quality
 
 - ESLint static analysis on all code
-- 100% test coverage on core package
+- CodeQL (`security-extended`) on every push and pull request
+- The core package has its own test suite (`npm run test:core`), with c8
+  coverage reported on every CI run
 - Parity tests ensure consistent behavior across environments
 
 ## Security Considerations for Users
@@ -118,7 +122,7 @@ No sensitive data is read from or written to environment variables.
 │                                                     │
 │  Zero External Dependencies                         │
 │  Deterministic for Given Random Input              │
-│  100% Test Coverage                                │
+│  Own Test Suite (npm run test:core)                │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -138,9 +142,9 @@ This architecture ensures:
 
 ## Audit History
 
-| Date | Auditor | Scope | Result |
-|------|---------|-------|--------|
-| 2024 | Internal | Full codebase | Passed |
+No third-party security audit has been performed. Vulnerabilities found
+so far are published as
+[GitHub security advisories](https://github.com/sebastienrousseau/jspassgen/security/advisories).
 
 ## Known Limitations
 

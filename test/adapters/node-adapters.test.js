@@ -4,7 +4,7 @@
 import { expect } from "chai";
 import { describe, it, beforeEach, afterEach } from "mocha";
 import sinon from "sinon";
-import { mkdir, rm, access, writeFile } from "fs/promises";
+import { mkdtemp, rm, access, stat, writeFile } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
 
@@ -105,7 +105,7 @@ describe("Node.js Adapters", () => {
         logger = new NodeConsoleLogger({ level: LogLevel.DEBUG });
         logger.debug("debug message");
         expect(consoleStubs.debug.calledOnce).to.be.true;
-        expect(consoleStubs.debug.firstCall.args[0]).to.include(
+        expect(consoleStubs.debug.firstCall.args[1]).to.include(
           "debug message",
         );
       });
@@ -121,14 +121,14 @@ describe("Node.js Adapters", () => {
         const metadata = { key: "value" };
         logger.debug("debug message", metadata);
         expect(consoleStubs.debug.calledOnce).to.be.true;
-        expect(consoleStubs.debug.firstCall.args[1]).to.deep.equal(metadata);
+        expect(consoleStubs.debug.firstCall.args[2]).to.deep.equal(metadata);
       });
 
       it("should not include metadata when empty object", () => {
         logger = new NodeConsoleLogger({ level: LogLevel.DEBUG });
         logger.debug("debug message", {});
         expect(consoleStubs.debug.calledOnce).to.be.true;
-        expect(consoleStubs.debug.firstCall.args).to.have.lengthOf(1);
+        expect(consoleStubs.debug.firstCall.args).to.have.lengthOf(2);
       });
     });
 
@@ -156,7 +156,7 @@ describe("Node.js Adapters", () => {
         const metadata = { count: 42, items: ["a", "b"] };
         logger.info("info message", metadata);
         expect(consoleStubs.info.calledOnce).to.be.true;
-        expect(consoleStubs.info.firstCall.args[1]).to.deep.equal(metadata);
+        expect(consoleStubs.info.firstCall.args[2]).to.deep.equal(metadata);
       });
     });
 
@@ -184,7 +184,15 @@ describe("Node.js Adapters", () => {
         const metadata = { warning: "low memory" };
         logger.warn("warn message", metadata);
         expect(consoleStubs.warn.calledOnce).to.be.true;
-        expect(consoleStubs.warn.firstCall.args[1]).to.deep.equal(metadata);
+        expect(consoleStubs.warn.firstCall.args[2]).to.deep.equal(metadata);
+      });
+
+      it("passes the message as data, never as the format string", () => {
+        logger = new NodeConsoleLogger({ level: LogLevel.WARN });
+        logger.warn("type %s:%d", { a: 1 });
+        const [format, message] = consoleStubs.warn.firstCall.args;
+        expect(format).to.equal("%s");
+        expect(message).to.include("type %s:%d");
       });
     });
 
@@ -206,14 +214,14 @@ describe("Node.js Adapters", () => {
         const error = new Error("Test error");
         logger.error("error occurred", error);
         expect(consoleStubs.error.calledOnce).to.be.true;
-        expect(consoleStubs.error.firstCall.args[1]).to.equal(error);
+        expect(consoleStubs.error.firstCall.args[2]).to.equal(error);
       });
 
       it("should log error message without Error object", () => {
         logger = new NodeConsoleLogger({ level: LogLevel.ERROR });
         logger.error("error message", null);
         expect(consoleStubs.error.calledOnce).to.be.true;
-        expect(consoleStubs.error.firstCall.args).to.have.lengthOf(1);
+        expect(consoleStubs.error.firstCall.args).to.have.lengthOf(2);
       });
     });
 
@@ -262,11 +270,8 @@ describe("Node.js Adapters", () => {
 
     beforeEach(async () => {
       // Create a unique test directory for each test
-      testDir = join(
-        tmpdir(),
-        `pwd-gen-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      );
-      await mkdir(testDir, { recursive: true });
+      // mkdtemp: a unique directory only this user can read.
+      testDir = await mkdtemp(join(tmpdir(), "jspassgen-test-"));
       storage = new NodeFsStorage({ basePath: testDir });
     });
 
@@ -343,6 +348,13 @@ describe("Node.js Adapters", () => {
         await access(filePath); // Should not throw
       });
 
+      it("creates files readable by the owner only", async function () {
+        if (process.platform === "win32") this.skip();
+        await storage.writeFile("secret.txt", "generated");
+        const { mode } = await stat(join(testDir, "secret.txt"));
+        expect(mode & 0o777).to.equal(0o600);
+      });
+
       it("should overwrite existing file", async () => {
         await storage.writeFile("overwrite.txt", "original");
         await storage.writeFile("overwrite.txt", "updated");
@@ -391,8 +403,7 @@ describe("Node.js Adapters", () => {
 
     describe("setBasePath", () => {
       it("should change base path", async () => {
-        const newDir = join(tmpdir(), `pwd-gen-new-${Date.now()}`);
-        await mkdir(newDir, { recursive: true });
+        const newDir = await mkdtemp(join(tmpdir(), "jspassgen-new-"));
 
         try {
           storage.setBasePath(newDir);

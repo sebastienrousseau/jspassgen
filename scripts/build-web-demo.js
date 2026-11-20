@@ -54,9 +54,6 @@ html = html.replace(
   '<script type="module" src="bundle.js"></script>',
 );
 
-// Update CSS paths (flatten to same directory)
-html = html.replace(/href="styles\//g, 'href="styles/');
-
 writeFileSync(join(DIST, "index.html"), html);
 
 // 3. Copy CSS files
@@ -70,4 +67,4 @@ for (const file of readdirSync(stylesDir)) {
 
 console.log("\n✓ Build complete: dist/web/");
 console.log("  To preview: npm run web:preview");
-console.log("  To deploy:  Copy dist/web/ to GitHub Pages branch");
+console.log("  Deployed by .github/workflows/pages.yml from main");

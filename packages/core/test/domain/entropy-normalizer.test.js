@@ -460,3 +460,21 @@ describe("Domain: entropy-normalizer", () => {
     });
   });
 });
+
+describe("normalizeEntropy: invalid results", () => {
+  it("returns 0 and logs the type as data, not as the format string", () => {
+    const original = console.warn;
+    const calls = [];
+    console.warn = (...args) => calls.push(args);
+    try {
+      expect(
+        normalizeEntropy("x", "strong", { length: -1, iteration: 1 }),
+      ).to.equal(0);
+    } finally {
+      console.warn = original;
+    }
+    expect(calls).to.have.lengthOf(1);
+    expect(calls[0][0]).to.equal("Invalid entropy calculated for type %s:");
+    expect(calls[0][1]).to.equal("strong");
+  });
+});

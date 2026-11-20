@@ -229,13 +229,13 @@ export const normalizeEntropy = (password, type, config) => {
 
     // Ensure we return a valid number
     if (!Number.isFinite(entropy) || entropy < 0) {
-      console.warn(`Invalid entropy calculated for type ${type}:`, entropy);
+      console.warn("Invalid entropy calculated for type %s:", type, entropy);
       return 0;
     }
 
     return Math.round(entropy * 100) / 100; // Round to 2 decimal places
   } catch (error) {
-    console.warn(`Error calculating entropy for type ${type}:`, error.message);
+    console.warn("Error calculating entropy for type %s:", type, error.message);
     return 0;
   }
 };

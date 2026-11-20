@@ -89,7 +89,11 @@ export class NodeFsStorage extends StoragePort {
   async writeFile(path, content) {
     const filePath = this._resolvePath(path);
     await this._ensureDir(filePath);
-    await writeFile(filePath, content, this.encoding);
+    // Owner-only: stored data can include generated secrets.
+    await writeFile(filePath, content, {
+      encoding: this.encoding,
+      mode: 0o600,
+    });
   }
 
   /**

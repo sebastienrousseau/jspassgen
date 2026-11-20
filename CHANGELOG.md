@@ -31,6 +31,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   contracts (chunk count and length, alphabet, custom-set exclusions, the
   2-character minimum, entropy growth, length validation) over 200 drawn
   configurations each.
+- **Log messages as data**: the Node.js console logger and the entropy
+  normalizer pass the message as an argument to a fixed `%s` format, so a
+  `%` in a message or a password type is printed, not interpreted
+  (CodeQL `js/tainted-format-string`).
+- **Owner-only storage files**: `NodeFsStorage` writes files with mode
+  0600, and the tests create their directories with `mkdtemp` instead of
+  a predictable name in the shared temp directory.
+- **CSPRNG in the worker pool**: `BulkPatterns.mixed` chose the next
+  password type with `Math.random()`; it now uses
+  `crypto.getRandomValues`, so nothing in the library calls
+  `Math.random()`.
+
+### Removed
+
+- `npm run web:deploy` and `scripts/deploy-gh-pages.js`, which pushed the
+  web demo to a `gh-pages` branch with shell commands built from the
+  environment. The Pages workflow deploys it from `main`.
+
+### Fixed
+
+- `SECURITY.md` names GitHub private vulnerability reporting, no longer
+  claims 100 % core coverage or an unrecorded 2024 audit, and links the
+  published advisories. `CONTRIBUTING.md` states Node.js 22 (as
+  `engines` does), points questions to Issues (Discussions are off) and
+  shows the current source tree. The 0.0.21 changelog entry cites
+  GHSA-8q9w-f94p-vxg8.
+- The Quality Gates Coveralls step ran only on Node.js 20, which the
+  matrix no longer has, so it never ran; it is removed (coveralls.yml
+  uploads coverage).
+- `scripts/build-web-demo.js` had a CSS path replacement that replaced a
+  string with itself; it is removed.
 
 ## [0.0.22] - 2026-11-18
 
@@ -67,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - `package-lock.json` moves serialize-javascript 7.1.2 to 7.1.4 (Dependabot alert: low).
-- **Web Word List**: The web UI (`WebUIController`) and the Web Worker built the core service without a dictionary, so `memorable` passwords were drawn from the core's 48-word placeholder list (about 5.6 bits per word) while their strength was reported for the 7776-word EFF list (about 12.9 bits per word), and `diceware` failed. Both now load the EFF list, and the core reports word-based entropy from the size of the dictionary it was given.
+- **Web Word List** ([GHSA-8q9w-f94p-vxg8](https://github.com/sebastienrousseau/jspassgen/security/advisories/GHSA-8q9w-f94p-vxg8)): The web UI (`WebUIController`) and the Web Worker built the core service without a dictionary, so `memorable` passwords were drawn from the core's 48-word placeholder list (about 5.6 bits per word) while their strength was reported for the 7776-word EFF list (about 12.9 bits per word), and `diceware` failed. Both now load the EFF list, and the core reports word-based entropy from the size of the dictionary it was given.
 - npm overrides force minimatch ^11.0.1 and glob ^14.0.2 across the dependency tree, since their dependants still request the vulnerable majors (Dependabot alert #107).
 
 ### Fixed
