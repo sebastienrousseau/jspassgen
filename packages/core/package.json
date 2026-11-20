@@ -1,6 +1,6 @@
 {
   "name": "@jspassgen/core",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Platform-agnostic core logic for password generation",
   "type": "module",
   "main": "src/index.js",
