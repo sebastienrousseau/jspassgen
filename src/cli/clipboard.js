@@ -7,14 +7,16 @@
  * The CLI exits as soon as it has printed the password, so a timer inside
  * it never fires. The clear is handed to a detached Node.js process
  * (`clipboard-clear.js`) that outlives the CLI. That process receives only
- * a SHA-256 digest of the password, over stdin rather than its command
- * line, and clears the clipboard only if it still holds the same text.
+ * a salted scrypt fingerprint of the password, over stdin rather than its
+ * command line, and clears the clipboard only if it still holds the same
+ * text. scrypt, rather than a fast hash, keeps the fingerprint expensive to
+ * brute-force should it ever leak.
  *
  * @module cli/clipboard
  */
 
 import { spawn } from "node:child_process";
-import { createHash } from "node:crypto";
+import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 /** How long a copied password stays on the clipboard, in milliseconds. */
@@ -22,14 +24,36 @@ export const CLIPBOARD_TTL_MS = 45000;
 
 const CLEARER = fileURLToPath(new URL("./clipboard-clear.js", import.meta.url));
 
+/** `<salt hex>:<scrypt hex>`, as produced by `fingerprint`. */
+const FINGERPRINT = /^([0-9a-f]{32}):([0-9a-f]{64})$/;
+
 /**
- * SHA-256 of a string, as lowercase hex.
+ * A salted scrypt fingerprint of a string.
  *
- * @param {string} text - The text to digest.
- * @returns {string} The hex digest.
+ * @param {string} text - The text to fingerprint.
+ * @param {Buffer} [salt] - 16 bytes of salt; random by default.
+ * @returns {string} `<salt hex>:<32-byte scrypt key hex>`.
  */
-export const digest = (text) =>
-  createHash("sha256").update(String(text)).digest("hex");
+export function fingerprint(text, salt = randomBytes(16)) {
+  const key = scryptSync(String(text), salt, 32);
+  return `${salt.toString("hex")}:${key.toString("hex")}`;
+}
+
+/**
+ * Whether `text` has the fingerprint `expected`, compared in constant time.
+ *
+ * @param {string} text - The text to check.
+ * @param {string} expected - A fingerprint from `fingerprint`.
+ * @returns {boolean} Whether they match; false for a malformed fingerprint.
+ */
+export function matchesFingerprint(text, expected) {
+  const parts = FINGERPRINT.exec(String(expected));
+  if (!parts) {
+    return false;
+  }
+  const actual = scryptSync(String(text), Buffer.from(parts[1], "hex"), 32);
+  return timingSafeEqual(actual, Buffer.from(parts[2], "hex"));
+}
 
 /**
  * Starts a detached process that clears the clipboard after `ttlMs` if it
@@ -51,38 +75,36 @@ export function scheduleClipboardClear(
     stdio: ["pipe", "ignore", "ignore"],
     windowsHide: true,
   });
-  child.stdin.end(`${digest(text)}\n`);
+  child.stdin.end(`${fingerprint(text)}\n`);
   child.unref();
   return child;
 }
 
 /**
- * Clears the clipboard if its content still has the expected digest.
+ * Clears the clipboard if its content still has the expected fingerprint.
  *
  * @param {{read: Function, write: Function}} clipboard - A clipboardy-like API.
- * @param {string} expectedDigest - SHA-256 hex of the copied text.
+ * @param {string} expected - The fingerprint of the copied text.
  * @returns {Promise<boolean>} Whether the clipboard was cleared.
  */
-export async function clearIfUnchanged(clipboard, expectedDigest) {
+export async function clearIfUnchanged(clipboard, expected) {
   const current = await clipboard.read();
-  if (digest(current) !== expectedDigest) {
+  if (!matchesFingerprint(current, expected)) {
     return false;
   }
   await clipboard.write("");
   return true;
 }
 
-const DIGEST = /^[0-9a-f]{64}$/;
-
 /**
  * The clearing process's work: wait `ttlArg` milliseconds, then clear the
- * clipboard if it still holds the text whose digest is `input`. Invalid
+ * clipboard if it still holds the text whose fingerprint is `input`. Invalid
  * arguments do nothing. Errors are swallowed: the CLI has already exited
  * and nobody is waiting on this process.
  *
  * @param {Object} options - Arguments.
  * @param {string} options.ttlArg - Delay in milliseconds, as a string.
- * @param {string} options.input - The digest read from stdin.
+ * @param {string} options.input - The fingerprint read from stdin.
  * @param {Function} options.loadClipboard - Resolves to a clipboardy-like API.
  * @param {Function} [options.wait] - Resolves after a delay.
  * @returns {Promise<boolean>} Whether the clipboard was cleared.
@@ -95,7 +117,7 @@ export async function runClearer({
 }) {
   const ttlMs = Number(ttlArg);
   const expected = String(input).trim();
-  if (!Number.isInteger(ttlMs) || ttlMs < 0 || !DIGEST.test(expected)) {
+  if (!Number.isInteger(ttlMs) || ttlMs < 0 || !FINGERPRINT.test(expected)) {
     return false;
   }
   await wait(ttlMs);
