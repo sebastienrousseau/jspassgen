@@ -7,6 +7,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.24] - Unreleased
+
+### Added
+
+- Releases carry their SLSA build provenance. The release workflow
+  attests every release file with `actions/attest-build-provenance`,
+  signed through Sigstore and stored as a GitHub attestation, and
+  attaches the bundle, listed in the release checksums, as
+  `jspassgen-<version>.intoto.jsonl`. Check a download with
+  `gh attestation verify <file> --repo sebastienrousseau/jspassgen`.
+  This answers the OpenSSF Scorecard Signed-Releases check.
+
+### Changed
+
+- Releases follow the suite's tag-driven flow. Pushing the signed tag
+  `v<version>` runs the release workflow, which checks the tag, tests,
+  builds and packs `dist/`, publishes that tarball to npmjs with
+  provenance once the `npm` environment is approved, publishes to
+  GitHub Packages, and drafts the GitHub release with the same tarball,
+  `SHA256SUMS` and the provenance bundle. The release tarball is now the
+  one npm serves; before, the maintainer packed and attached it locally,
+  so its bytes differed from npm's and CI could not vouch for them. The
+  `workflow_dispatch` fallback is gone: rerunning the failed job of the
+  tag's run does the same.
+
 ## [0.0.23] - 2026-11-20
 
 ### Changed

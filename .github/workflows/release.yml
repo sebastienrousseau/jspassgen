@@ -1,114 +1,155 @@
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+# Release on a pushed `v<version>` tag, in four jobs, as every member of
+# the jspassgen suite releases:
+#
+# 1. check: the tag is an annotated, signed tag whose message is
+#    `<repository> v<version>` and whose version matches package.json;
+#    then the tests and `npm run build`, which packs dist/ into the
+#    release tarball, and SHA256SUMS over it.
+# 2. publish-npm: publishes that exact tarball to npmjs with provenance,
+#    after a maintainer approves the `npm` environment (required
+#    reviewer). npm trusted publishing accepts this workflow in that
+#    environment, so no NPM_TOKEN is stored. A version already on npmjs
+#    is skipped, so a rerun is safe.
+# 3. publish-github-packages: the same build, published to GitHub
+#    Packages.
+# 4. github-release: a draft GitHub release titled `<repository>
+#    <version>` with the tarball and SHA256SUMS attached, and notes with
+#    What's Changed, the checksums and the Full Changelog line. The
+#    maintainer writes the Highlights and publishes the draft.
+#    The release also carries the SLSA build provenance of its files,
+#    signed through Sigstore (<project>-<version>.intoto.jsonl).
+#
+# The tarball on the release is the one CI built and npm published, not
+# one packed on a maintainer's machine, so the provenance describes the
+# bytes people download. CI cannot verify the tag's signature (it has no
+# maintainer keys); it checks that the tag carries one. Verify it locally
+# with `git verify-tag v<version>` before pushing the tag.
 name: Release
 
-# `published`, not `created`: gh release create with assets makes a draft,
-# uploads, then publishes, and a draft's `created` event starts no workflow.
-#
-# workflow_dispatch publishes an existing release tag to npmjs only, for a
-# release whose npm job failed: the maintainer runs it from main with the
-# tag, approves the npm environment, and the tag's code is built, tested
-# and published with provenance. GitHub Packages is left alone.
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Existing release tag to publish to npmjs (e.g. v0.0.21)"
-        required: true
-        type: string
+  push:
+    tags: ["v*"]
 
-# Read-only by default: publish-npmjs adds id-token and
-# publish-github-packages adds packages, each for its own job only.
+# Read-only by default: each job adds only the permissions it needs.
 permissions:
   contents: read
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.x]
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
+jobs:
+  check:
+    name: Check the tag, test, build and pack
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      spec: ${{ steps.tag.outputs.spec }}
+      version: ${{ steps.tag.outputs.version }}
+      tarball: ${{ steps.pack.outputs.tarball }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.tag || github.ref }}
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
           cache: "npm"
-
-      - name: Install dependencies
+      - name: Check the tag against package.json
+        id: tag
+        env:
+          TAG: ${{ github.ref_name }}
+          PROJECT: ${{ github.event.repository.name }}
+        run: |
+          git fetch --force origin "+refs/tags/${TAG}:refs/tags/${TAG}"
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          fail() { echo "::error::$1"; exit 1; }
+          [ "$TAG" = "v${version}" ] || fail "tag ${TAG} does not match package.json version ${version}"
+          [ "$(git cat-file -t "$TAG")" = "tag" ] || fail "${TAG} is not an annotated tag"
+          subject=$(git tag -l --format='%(contents:subject)' "$TAG")
+          [ "$subject" = "${PROJECT} v${version}" ] || fail "tag message is '${subject}', expected '${PROJECT} v${version}'"
+          [ -n "$(git tag -l --format='%(contents:signature)' "$TAG")" ] || fail "${TAG} is not signed"
+          [ "$(git rev-parse "${TAG}^{commit}")" = "$GITHUB_SHA" ] || fail "${TAG} does not point at the checked-out commit"
+          echo "spec=${name}@${version}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Locked install
         run: npm ci
-
       - name: Build
         run: npm run build
-
-      - name: Testing & Coverage
+      - name: Test
         run: npm run test
+      # `npm run build` ends with `npm pack ./dist`, which writes the
+      # tarball to the repository root.
+      - name: Collect the tarball and checksum it
+        id: pack
+        env:
+          SPEC: ${{ steps.tag.outputs.spec }}
+        run: |
+          tarball=$(node -p "const [n, v] = process.env.SPEC.split(/@(?=[^@]+$)/); n.replace(/^@/, '').replace('/', '-') + '-' + v + '.tgz'")
+          mkdir -p release
+          mv "$tarball" release/
+          (cd release && sha256sum "$tarball" > SHA256SUMS && cat SHA256SUMS)
+          echo "tarball=${tarball}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release
+          path: release/
+          if-no-files-found: error
+          retention-days: 30
 
   # Publishes to npmjs only after a maintainer approves the `npm`
   # environment (required reviewer). The package's npm trusted publisher
   # accepts this repository's release.yml in that environment, so no
   # NPM_TOKEN is stored and nothing reaches npm without the approval.
-  # npm attaches provenance. This replaces `npm stage publish`, which
-  # failed with E401 for 0.0.21 even with a stage-only trusted publisher;
-  # it is the setup crypto-service releases with.
-  publish-npmjs:
-    needs: build
-    runs-on: ubuntu-latest
+  publish-npm:
+    name: Publish to npmjs
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     environment: npm
     permissions:
       contents: read
       id-token: write # npm trusted publishing (OIDC) and provenance
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ inputs.tag || github.ref }}
-          persist-credentials: false
-
       # package-manager-cache is off so a cached npm cannot shadow the npm
       # bundled with Node 24 (>= 11.5.1, needed for trusted publishing).
-      - name: Use Node.js 24.x
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24.x
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false
-
-      - name: Skip versions already on npmjs
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: release
+      - name: Check the tarball against SHA256SUMS
+        working-directory: release
+        run: sha256sum --check SHA256SUMS
+      - name: Skip a version already on npmjs
         id: registry
+        env:
+          SPEC: ${{ needs.check.outputs.spec }}
         run: |
-          name=$(node -p "require('./package.json').name")
-          version=$(node -p "require('./package.json').version")
-          echo "spec=${name}@${version}" >> "$GITHUB_OUTPUT"
-          if npm view "${name}@${version}" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
-            echo "::notice::${name}@${version} is already on npmjs; nothing to publish"
+          if npm view "$SPEC" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "::notice::${SPEC} is already on npmjs; nothing to publish"
             echo "published=true" >> "$GITHUB_OUTPUT"
           else
             echo "published=false" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Install dependencies
+      # `./` keeps npm from reading the path as a GitHub shorthand.
+      - name: Publish with provenance
         if: steps.registry.outputs.published == 'false'
-        run: npm ci
-
-      - name: Build distribution
-        if: steps.registry.outputs.published == 'false'
-        run: npm run build
-
-      - name: Publish to npmjs with provenance
-        if: steps.registry.outputs.published == 'false'
-        run: |
-          cd dist
-          npm publish --access public --tag latest --provenance --registry=https://registry.npmjs.org
-
+        env:
+          TARBALL: ${{ needs.check.outputs.tarball }}
+        run: npm publish "./release/${TARBALL}" --access public --tag latest --provenance --registry=https://registry.npmjs.org
       - name: Verify the version is public on npmjs
         if: steps.registry.outputs.published == 'false'
         env:
-          SPEC: ${{ steps.registry.outputs.spec }}
+          SPEC: ${{ needs.check.outputs.spec }}
         # npm answers "being processed" after a publish, and the version
         # can take a few minutes to resolve, so poll before failing.
         run: |
@@ -124,14 +165,17 @@ jobs:
           exit 1
 
   publish-github-packages:
-    needs: build
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
+    name: Publish to GitHub Packages
+    needs: [check, publish-npm]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Use Node.js 22.x
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -164,3 +208,67 @@ jobs:
           npm publish --access public --registry https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  github-release:
+    name: Draft the GitHub release
+    needs: [check, publish-npm]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write # create the draft release and upload its assets
+      id-token: write # sign the build provenance through Sigstore
+      attestations: write # store the provenance as a GitHub attestation
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: release
+      # SLSA build provenance for every release file, signed through
+      # Sigstore and stored as a GitHub attestation of this run. Its
+      # Sigstore bundle (the signed in-toto statement) is attached as
+      # <project>-<version>.intoto.jsonl, so the release carries its own
+      # provenance. Check an asset with
+      # `gh attestation verify <file> --repo <owner>/<repo>`; add
+      # `--bundle <project>-<version>.intoto.jsonl` to check it against
+      # the attached bundle.
+      - name: Attest build provenance
+        id: attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: release/*
+      - name: Attach the provenance bundle
+        env:
+          BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+          PROJECT: ${{ github.event.repository.name }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: cp "$BUNDLE" "release/${PROJECT}-${VERSION}.intoto.jsonl"
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+          PROJECT: ${{ github.event.repository.name }}
+          VERSION: ${{ needs.check.outputs.version }}
+        # The generated notes end with the Full Changelog line; the
+        # checksums go just before it, as the release standard orders them.
+        # They are computed here over every file in release/, the exact set
+        # of assets attached below.
+        run: |
+          gh api "repos/${REPO}/releases/generate-notes" -f tag_name="$TAG" --jq .body > generated.md
+          {
+            echo "## Highlights ⭐️"
+            echo
+            grep -v '^\*\*Full Changelog\*\*' generated.md
+            echo
+            echo "## Checksums"
+            echo
+            echo "SHA-256 of every asset attached to this release:"
+            echo
+            echo '```text'
+            (cd release && sha256sum -- *)
+            echo '```'
+            echo
+            grep '^\*\*Full Changelog\*\*' generated.md || true
+          } > notes.md
+          gh release create "$TAG" release/* --repo "$REPO" --draft \
+            --title "${PROJECT} ${VERSION}" --notes-file notes.md --verify-tag
