@@ -8,8 +8,8 @@ older `0.0.x` versions do not. The unscoped `jspassgen` package stopped at
 
 | Version  | Receives security fixes? |
 | -------- | ------------------------ |
-| 0.0.23   | Yes (latest)             |
-| < 0.0.23 | No                       |
+| 0.0.24   | Yes (latest)             |
+| < 0.0.24 | No                       |
 
 ## Reporting a Vulnerability
 
